@@ -3,9 +3,12 @@
 (defvar *conf* nil
   "The current Thune configuration")
 
-(defun register (socket)
-  (send-message socket (make-message "NICK" (list (conf-value "nick" *conf*))))
-  (send-message socket (make-message "USER" (list (conf-value "user" *conf*)
+(defvar *socket* nil
+  "The current connection")
+
+(defun register ()
+  (send-message *socket* (make-message "NICK" (list (conf-value "nick" *conf*))))
+  (send-message *socket* (make-message "USER" (list (conf-value "user" *conf*)
                                                   "" ""
                                                   (conf-value "realname" *conf*)))))
 
@@ -14,12 +17,16 @@
     (setf (command message) "PONG")
     (send-message socket message)))
 
+(defhandler log-input (socket message)
+  (declare (ignore socket))
+  (format t "-> ~a" message))
+
 (defun start ()
   "Launches the bot."
   (sanify-output)
   (setf *conf* (load-conf "./thune.conf"))
-  (let ((socket (connect (conf-value "server" *conf*))))
-    (register socket)
-    (loop (mapcar (lambda (handler)
-                    (funcall handler socket (get-message socket)))
-                  *handlers*))))
+  (setf *socket* (connect (conf-value "server" *conf*)))
+  (register)
+  (loop (mapcar (lambda (handler)
+                  (funcall handler (get-message socket)))
+                *handlers*)))
