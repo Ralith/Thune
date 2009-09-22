@@ -12,6 +12,18 @@
   (with-open-file (stream path)
     (read-ini stream)))
 
+(defun trim (c str)
+  "Trims all instances of C from both ends of STR.  Returns a subsequence of STR."
+  (let* ((len (length str))
+	 (start 0) (end len))
+    (do ((i 0 (1+ i)))
+	((char/= c (char str i)))
+      (setf start (1+ i)))
+    (do ((i  (1- len) (1- i)))
+	((char/= c (char str i)))
+      (setf end i))
+    (subseq str start end)))
+
 (defun read-ini (stream)
   "Parses INI-style data from stream into an alist."
   (let ((res))

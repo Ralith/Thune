@@ -1,4 +1,4 @@
 (defpackage :thune
-  (:use :cl :cl-irc :cl-fad)
+  (:use :cl :ircl :cl-fad :split-sequence)
   (:documentation "An IRC bot")
   (:export :start))
