@@ -1,12 +1,20 @@
 (in-package :thune)
 
-(defun reply-target (message)
+(defun send (socket message)
+  (send-message socket message)
+  (format t "<- ~a" (message->string message nil)))
+
+(defun reply-target (message conf)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."
   (assert (slot-boundp message 'ircl:prefix))
   (let ((target (first (parameters message))))
-    (if (string= target (conf-value "nick" *conf*))
+    (if (string= target (conf-value "nick" conf))
 	(nick (prefix message))
 	target)))
+
+(defun reply-to (message conf reply)
+  (make-message (command message) (list (reply-target message conf)
+                                        reply)))
 
 (defmacro when-from-admin (message &body body)
   `(when (some #'identity (mapcar (lambda (admin) (string= admin (host ,message)))

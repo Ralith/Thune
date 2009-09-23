@@ -15,11 +15,11 @@
 (defhandler pong (socket message)
   (when (string= (command message) "PING")
     (setf (command message) "PONG")
-    (send-message socket message)))
+    (send socket message)))
 
 (defhandler log-input (socket message)
   (declare (ignore socket))
-  (format t "-> ~a" message))
+  (format t "-> ~a" (message->string message)))
 
 (defun start ()
   "Launches the bot."
@@ -28,5 +28,5 @@
   (setf *socket* (connect (conf-value "server" *conf*)))
   (register)
   (loop (mapcar (lambda (handler)
-                  (funcall handler (get-message socket)))
+                  (funcall handler (get-message *socket*)))
                 *handlers*)))
