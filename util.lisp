@@ -2,7 +2,7 @@
 
 (defun send (socket message)
   (send-message socket message)
-  (format t "<- ~a" (message->string message nil)))
+  (format t "<- ~a~%" (message->string message nil)))
 
 (defun reply-target (message nick)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."

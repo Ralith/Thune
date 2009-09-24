@@ -5,6 +5,9 @@
 (defun add-handler (handler)
   (pushnew handler *handlers*))
 
+(defun remove-handler (handler)
+  (setf *handlers* (remove handler *handlers*)))
+
 (defmacro defhandler (name args &body body)
   `(progn
      (defun ,name ,args ,@body)

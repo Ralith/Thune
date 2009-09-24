@@ -4,10 +4,10 @@
   "The current Thune configuration")
 
 (defun register (socket)
-  (send-message socket (make-message "NICK" (list (conf-value "nick" *conf*))))
-  (send-message socket (make-message "USER" (list (conf-value "user" *conf*)
-                                                  "" ""
-                                                  (conf-value "realname" *conf*)))))
+  (send socket (make-message "NICK" (list (conf-value "nick" *conf*))))
+  (send socket (make-message "USER" (list (conf-value "user" *conf*)
+                                          "." "."
+                                          (conf-value "realname" *conf*)))))
 
 (defhandler pong (socket message)
   (when (string= (command message) "PING")
@@ -16,7 +16,7 @@
 
 (defhandler log-input (socket message)
   (declare (ignore socket))
-  (format t "-> ~a" (message->string message)))
+  (format t "-> ~a~%" (message->string message)))
 
 (defun start ()
   "Launches the bot."
