@@ -11,20 +11,20 @@
      (cond
        ((char= (aref (conf-value "cmdchar" *conf*) 0)
                (aref string 0))
-        (if (null first-space)
-            (values ""
-                    (subseq string 1))
+        (if first-space
             (values (subseq string (1+ first-space))
-                    (subseq string 1 first-space))))
+                    (subseq string 1 first-space))
+            (values ""
+                    (subseq string 1))))
        ((string= nick (subseq string 0 (length nick)))
         (when first-space
           (let ((second-space (position #\Space string
                                         :start (1+ first-space))))
-            (if (null second-space)
-                (values ""
-                        (subseq string (1+ first-space)))
+            (if second-space
                 (values (subseq string (1+ second-space))
-                        (subseq string (1+ first-space) second-space))))))))))
+                        (subseq string (1+ first-space) second-space))
+                (values ""
+                        (subseq string (1+ first-space)))))))))))
 
 (defun add-command (function)
   (pushnew function *commands*))
