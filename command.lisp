@@ -5,20 +5,25 @@
 (defun command-args (message)
   (when (or (string= "PRIVMSG" (command message))
             (string= "NOTICE" (command message)))
-    (let ((string (car (last (parameters message))))
-          (nick (conf-value "nick" *conf*)))
+    (let* ((string (car (last (parameters message))))
+           (first-space (position #\Space string))
+           (nick (conf-value "nick" *conf*)))
      (cond
        ((char= (aref (conf-value "cmdchar" *conf*) 0)
                (aref string 0))
-        (subseq string 1))
+        (if (null first-space)
+            (values nil
+                    (subseq string 1))
+            (values (subseq string (1+ first-space))
+                    (subseq string 1 first-space))))
        ((string= nick (subseq string 0 (length nick)))
-        (subseq string (1+ (position #\Space string))))))))
-
-(defun command-name (command-args)
-  (let ((delim (position #\Space command-args)))
-    (if delim
-      (subseq command-args delim)
-      command-args)))
+        (let ((second-space (position #\Space string :start (1+ first-space))))
+          (when first-space
+            (if (null second-space)
+                (values nil
+                        (subseq string (1+ first-space)))
+                (values (subseq string (1+ second-space))
+                        (subseq string (1+ first-space) second-space))))))))))
 
 (defun add-command (function)
   (pushnew function *commands*))
@@ -29,8 +34,7 @@
      (add-command ,name)))
 
 (defhandler command-launcher (socket message)
-  (let* ((args (get-command message))
-         (command (command-name args)))
+  (multiple-value-bind (args command) (command-args message)
     (loop for command-func in *commands* do
          (when (string= (string-upcase command)
                         (symbol-name command-func))
