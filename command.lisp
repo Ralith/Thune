@@ -30,9 +30,12 @@
   (pushnew function *commands*))
 
 (defmacro defcommand (name args &body body)
-  `(progn
-     (defun ,name ,args ,@body)
-     (add-command (quote ,name))))
+  (let ((func (intern (concatenate 'string
+                                   "COMMAND-"
+                                   (symbol-name name)))))
+   `(progn
+      (defun ,func ,args ,@body)
+      (add-command (quote ,func)))))
 
 (defhandler command-launcher (socket message)
   (multiple-value-bind (args command) (command-args message)
@@ -40,5 +43,6 @@
     (when (and command (< 0 (length command)))
       (loop for command-func in *commands* do
            (when (string= (string-upcase command)
-                          (symbol-name command-func))
+                          (concatenate 'string "COMMAND-"
+                                       (symbol-name command-func)))
              (funcall command-func socket message))))))
