@@ -26,24 +26,26 @@
                  (values ""
                          (subseq string (1+ first-space)))))))))))
 
-(defun add-command (function)
-  (pushnew function *commands*))
+(defun add-command (name function)
+  (let ((current (assoc name *commands*
+                        :test #'string-equal)))
+    (if current
+        (setf (cdr current) function)
+        (push (cons name function) *commands*)))
+  *commands*)
 
 (defmacro defcommand (name args &body body)
-  (let ((func (intern (concatenate 'string
-                                   "COMMAND-"
-                                   (symbol-name name)))))
+  (let ((func-name (intern (concatenate 'string
+                                        "COMMAND-" name))))
     `(progn
-       (defun ,func ,args ,@body)
-       (add-command (quote ,func)))))
+       (defun ,func-name ,args ,@body)
+       (add-command ,name (quote ,func-name)))))
 
-;; TODO: Parallelize
+;; TODO: Parallelize command execution
 (defhandler command-launcher (socket message)
-  (multiple-value-bind (args command) (command-args message)
+  (multiple-value-bind (args command-name) (command-args message)
     (declare (ignore args))
-    (when (and command (< 0 (length command)))
-      (loop for command-func in *commands* do
-           (when (string= (string-upcase command)
-                          (concatenate 'string "COMMAND-"
-                                       (symbol-name command-func)))
-             (funcall command-func socket message))))))
+    (let ((command (assoc command-name *commands*
+                          :test #'string-equal)))
+      (when command
+        (funcall (cdr command) socket message)))))
