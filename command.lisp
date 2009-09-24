@@ -42,6 +42,3 @@
            (when (string= (string-upcase command)
                           (symbol-name command-func))
              (funcall command-func socket message))))))
-
-(defcommand ping (socket message)
-  (send socket (reply-to message (conf-value "nick" *conf*) "Pong!")))
