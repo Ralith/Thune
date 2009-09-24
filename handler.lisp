@@ -9,3 +9,8 @@
   `(progn
      (defun ,name ,args ,@body)
      (add-handler (quote ,name))))
+
+(defun call-handlers (socket message)
+  (mapcar (lambda (handler)
+            (funcall handler socket message))
+          *handlers*))
