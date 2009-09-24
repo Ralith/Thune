@@ -4,16 +4,16 @@
   (send-message socket message)
   (format t "<- ~a" (message->string message nil)))
 
-(defun reply-target (message conf)
+(defun reply-target (message nick)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."
   (assert (slot-boundp message 'ircl:prefix))
   (let ((target (first (parameters message))))
-    (if (string= target (conf-value "nick" conf))
+    (if (string= target nick)
 	(nick (prefix message))
 	target)))
 
-(defun reply-to (message conf reply)
-  (make-message (command message) (list (reply-target message conf)
+(defun reply-to (message nick reply)
+  (make-message (command message) (list (reply-target message nick)
                                         reply)))
 
 (defmacro when-from-admin (message &body body)
