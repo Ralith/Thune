@@ -17,7 +17,7 @@
                                         reply)))
 
 (defmacro when-from-admin (message &body body)
-  `(when (some #'identity (mapcar (lambda (admin) (string= admin (host ,message)))
+  `(when (some #'identity (mapcar (lambda (admin) (string= admin (prefix->string (prefix ,message))))
                                   (mapcar (lambda (str) (trim #\space str))
                                           (split-sequence:split-sequence #\, (conf-value "admins" *conf*)))))
      ,@body))
