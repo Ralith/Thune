@@ -36,7 +36,8 @@
 
 (defmacro defcommand (name args &body body)
   (let ((func-name (intern (concatenate 'string
-                                        "COMMAND-" name))))
+                                        "COMMAND-"
+                                        (string-upcase name)))))
     `(progn
        (defun ,func-name ,args ,@body)
        (add-command ,name (quote ,func-name)))))

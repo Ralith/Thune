@@ -24,7 +24,7 @@
 (defun start ()
   "Launches the bot."
   (sanify-output)
-  (setf *conf* (load-conf "./thune.conf"))
+  (setf *conf* (load-conf "thune.conf"))
   (setf *socket* (connect (conf-value "server" *conf*)))
   (register)
   (loop (mapcar (lambda (handler)
