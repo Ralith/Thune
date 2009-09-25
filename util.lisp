@@ -1,8 +1,13 @@
 (in-package :thune)
 
 (defun send (socket message)
-  (send-message socket message)
-  (format t "<- ~a~%" (message->string message nil)))
+  (typecase message
+    (message
+     (send-message socket message)
+     (format t "<- ~a~%" (message->string message nil)))
+    (string
+     (send-raw socket message)
+     (format t "<- ~a~%" message))))
 
 (defun reply-target (message nick)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."

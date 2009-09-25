@@ -8,3 +8,7 @@
   (when-from-admin message
     (signal 'disable-reconnect)
     (send socket (make-message "QUIT" (list (command-args message))))))
+
+(defcommand "raw" (socket message)
+  (when-from-admin message
+    (send socket (command-args message))))
