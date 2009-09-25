@@ -16,7 +16,8 @@
                      (subseq string 1 first-space))
              (values ""
                      (subseq string 1))))
-        ((string= nick (subseq string 0 (length nick)))
+        ((and (> (length string) (length nick))
+          (string= nick (subseq string 0 (length nick))))
          (when first-space
            (let ((second-space (position #\Space string
                                          :start (1+ first-space))))

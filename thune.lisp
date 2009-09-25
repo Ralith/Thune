@@ -18,10 +18,27 @@
   (declare (ignore socket))
   (format t "-> ~a~%" (message->string message)))
 
+(define-condition disable-reconnect () ())
+
 (defun start ()
   "Launches the bot."
   (sanify-output)
   (setf *conf* (load-conf "thune.conf"))
-  (let ((socket (connect (conf-value "server" *conf*))))
-    (register socket)
-    (loop (call-handlers socket (get-message socket)))))
+  (format t "Connecting...~%")
+  (let ((socket)
+        (reconnect t))
+    (loop while reconnect do
+         (setf socket (connect (conf-value "server" *conf*)))
+         (format t "Connected.~%")
+         (register socket)
+         (handler-case
+             (handler-bind ((disable-reconnect
+                             (lambda (c)
+                               (declare (ignore c))
+                               (setf reconnect nil)
+                               (continue))))
+               (loop (call-handlers socket (get-message socket))))
+           (end-of-file ()
+             (format t "Disconnected.~%")
+             (when reconnect
+               (format t "Reconnecting...~%")))))))
