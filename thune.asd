@@ -10,7 +10,8 @@
    (:module "handlers"
             :depends-on ("conf" "handler" "thune" "util")
             :components
-            ((:file "autojoin")))
+            ((:file "autojoin")
+             (:file "combo")))
    (:module "commands"
             :depends-on ("command")
             :components
