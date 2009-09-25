@@ -4,10 +4,11 @@
   "The current Thune configuration")
 
 (defun register (socket)
-  (send socket (make-message "NICK" (list (conf-value "nick" *conf*))))
-  (send socket (make-message "USER" (list (conf-value "user" *conf*)
-                                          "." "."
-                                          (conf-value "realname" *conf*)))))
+  (send socket (make-message "NICK" (conf-value "nick" *conf*)))
+  (send socket (make-message "USER"
+                             (conf-value "user" *conf*)
+                             "." "."
+                             (conf-value "realname" *conf*))))
 
 (defhandler pong (socket message)
   (when (string= (command message) "PING")
@@ -41,7 +42,4 @@
            (end-of-file ()
              (format t "Disconnected.~%")
              (when reconnect
-               (format t "Reconnecting...~%")))
-           (error (err)
-             (send socket (make-message "QUIT" (list (format nil "An unhandled error occurred: ~a" err))))
-             (setf reconnect nil))))))
+               (format t "Reconnecting...~%")))))))

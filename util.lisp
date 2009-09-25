@@ -18,8 +18,7 @@
 	target)))
 
 (defun reply-to (message nick reply)
-  (make-message (command message) (list (reply-target message nick)
-                                        reply)))
+  (make-message (command message) (reply-target message nick) reply))
 
 (defmacro when-from-admin (message &body body)
   `(when (some #'identity (mapcar (lambda (admin) (string= admin (prefix->string (prefix ,message))))
