@@ -6,3 +6,6 @@
 (defcommand "echo" (socket message)
   (send socket (reply-to message (conf-value "nick" *conf*)
                          (command-args message))))
+
+(defcommand "zup" (socket message)
+  (send socket (reply-to message (conf-value "nick" *conf*) "zup")))

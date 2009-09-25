@@ -41,4 +41,7 @@
            (end-of-file ()
              (format t "Disconnected.~%")
              (when reconnect
-               (format t "Reconnecting...~%")))))))
+               (format t "Reconnecting...~%")))
+           (error (err)
+             (send socket (make-message "QUIT" (list (format nil "An unhandled error occurred: ~a" err))))
+             (setf reconnect nil))))))
