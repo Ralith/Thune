@@ -11,4 +11,4 @@
 
 (defcommand "raw" (socket message)
   (when-from-admin message
-    (send socket (command-args message))))
+    (send-raw socket (command-args message))))
