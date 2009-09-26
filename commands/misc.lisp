@@ -10,7 +10,7 @@
   (send socket (reply-to message "zup")))
 
 (defcommand "emote" (socket message)
-  (sfend socket (reply-to message (format nil "~CACTION ~a~C"
+  (send socket (reply-to message (format nil "~CACTION ~a~C"
                                          (code-char 1)
                                          (command-args message)
                                          (code-char 1)))))
