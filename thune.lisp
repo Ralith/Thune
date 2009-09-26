@@ -32,20 +32,17 @@
          (setf socket (connect (conf-value "server" *conf*)))
          (format t "Connected.~%")
          (register socket)
-         (handler-case
-             (handler-bind ((disable-reconnect
-                             (lambda (c)
-                               (declare (ignore c))
-                               (setf reconnect nil)
-                               (continue)))
-                            (error
-                             (lambda (e)
-                               (signal 'disable-reconnect)
-                               (send socket (make-message "QUIT" (format nil "Error: ~a" e))))))
-               (handler-case
-                   (loop (call-handlers socket (get-message socket)))
-                 (end-of-file ()
-                   (disconnect socket)
-                   (format t "Disconnected.~%")
-                   (when reconnect
-                     (format t "Reconnecting...~%")))))))))
+         (handler-bind ((disable-reconnect
+                         (lambda (c)
+                           (declare (ignore c))
+                           (setf reconnect nil)))
+                        (error
+                         (lambda (e)
+                           (send socket (make-message "QUIT" (format nil "Error: ~a" e))))))
+           (handler-case
+               (loop (call-handlers socket (get-message socket)))
+             (end-of-file ()
+               (disconnect socket)
+               (format t "Disconnected.~%")
+               (when reconnect
+                 (format t "Reconnecting...~%"))))))))
