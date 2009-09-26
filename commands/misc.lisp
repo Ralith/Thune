@@ -1,11 +1,10 @@
 (in-package :thune)
 
 (defcommand "ping" (socket message)
-  (send socket (reply-to message (conf-value "nick" *conf*) "Pong!")))
+  (send socket (reply-to message "Pong!")))
 
 (defcommand "echo" (socket message)
-  (send socket (reply-to message (conf-value "nick" *conf*)
-                         (command-args message))))
+  (send socket (reply-to message (command-args message))))
 
 (defcommand "zup" (socket message)
-  (send socket (reply-to message (conf-value "nick" *conf*) "zup")))
+  (send socket (reply-to message "zup")))

@@ -22,7 +22,7 @@
                       (setf (cdr current-count) 1))))
               (when (and current-count
                          (>= (cdr current-count) 3))
-                (send socket (reply-to message (conf-value "nick" *conf*) string))
+                (send socket (reply-to message string))
                 (setf (cdr current-count) 0)))
             (push (cons channel string)
                   *last-message*))))))

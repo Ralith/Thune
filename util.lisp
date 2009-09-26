@@ -8,16 +8,16 @@
   (ircl:send-raw socket string)
   (format t "<- ~a~%" string))
 
-(defun reply-target (message nick)
+(defun reply-target (message)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."
   (assert (slot-boundp message 'ircl:prefix))
   (let ((target (first (parameters message))))
-    (if (string= target nick)
+    (if (string= target (conf-value "nick" *conf*))
 	(nick (prefix message))
 	target)))
 
-(defun reply-to (message nick reply)
-  (make-message (command message) (reply-target message nick) reply))
+(defun reply-to (message reply)
+  (make-message (command message) (reply-target message) reply))
 
 (defmacro when-from-admin (message &body body)
   `(when (some #'identity (mapcar (lambda (admin) (string= admin (prefix->string (prefix ,message))))
