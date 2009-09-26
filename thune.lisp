@@ -37,15 +37,15 @@
                              (lambda (c)
                                (declare (ignore c))
                                (setf reconnect nil)
-                               (continue))))
+                               (continue)))
+                            (error
+                             (lambda (e)
+                               (signal 'disable-reconnect)
+                               (send socket (make-message "QUIT" (format nil "Error: ~a" e))))))
                (handler-case
                    (loop (call-handlers socket (get-message socket)))
                  (end-of-file ()
                    (disconnect socket)
                    (format t "Disconnected.~%")
                    (when reconnect
-                     (format t "Reconnecting...~%")))
-                 (error (e)
-                   (signal 'disable-reconnect)
-                   (send socket (make-message "QUIT" (format nil "Error: ~a" e)))
-                   (error e))))))))
+                     (format t "Reconnecting...~%")))))))))
