@@ -31,3 +31,15 @@
   (progn (setf sb-impl::*default-external-format* :UTF-8)
 	 (setf sb-alien::*default-c-string-external-format* :UTF-8)
 	 (sb-kernel:stream-cold-init-or-reset)))
+
+(defun substitute-string (sequence old-pattern new-pattern)
+  (let ((position (search old-pattern sequence))
+        (result (copy-seq sequence)))
+    (loop while position do
+         (setf result
+               (concatenate 'string
+                            (subseq sequence 0 position)
+                            new-pattern
+                            (subseq sequence (+ position (length old-pattern)))))
+         (setf position (search old-pattern result)))
+    result))
