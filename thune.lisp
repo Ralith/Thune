@@ -40,6 +40,13 @@
                                (continue))))
                (loop (call-handlers socket (get-message socket))))
            (end-of-file ()
+             (disconnect socket)
              (format t "Disconnected.~%")
              (when reconnect
-               (format t "Reconnecting...~%")))))))
+               (format t "Reconnecting...~%")))
+           (error (e)
+                          ;; TODO: Consider moving this inside handler-bind to use signal instead
+             (setf reconnect nil)
+             (send socket (make-message "QUIT" (format nil "Error: ~a" e)))
+             (error e)
+             ())))))
