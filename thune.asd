@@ -2,7 +2,8 @@
   :description "A straightforward IRC bot."
   :depends-on (:ircl :cl-fad :split-sequence :montezuma)
   :components
-  ((:file "util")
+  ((:file "package")
+   (:file "util")
    (:file "handler")
    (:file "conf" :depends-on ("util"))
    (:file "thune" :depends-on ("conf" "handler"))
