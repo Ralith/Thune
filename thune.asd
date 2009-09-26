@@ -12,7 +12,8 @@
             :depends-on ("conf" "handler" "thune" "util" "package")
             :components
             ((:file "autojoin")
-             (:file "combo")))
+             (:file "combo")
+             (:file "revenge")))
    (:module "commands"
             :depends-on ("command" "package")
             :components
