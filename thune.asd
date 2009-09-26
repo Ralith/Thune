@@ -18,4 +18,5 @@
             :depends-on ("command" "package")
             :components
             ((:file "misc")
-             (:file "admin")))))
+             (:file "admin")
+             (:file "help")))))

@@ -35,6 +35,9 @@
         (push (cons name function) *commands*)))
   *commands*)
 
+(defun find-command (name)
+  (cdr (assoc name *commands* :test #'string-equal)))
+
 (defmacro defcommand (name args &body body)
   (let ((func-name (intern (concatenate 'string
                                         "COMMAND-"
@@ -47,7 +50,6 @@
 (defhandler command-launcher (socket message)
   (multiple-value-bind (args command-name) (command-args message)
     (declare (ignore args))
-    (let ((command (assoc command-name *commands*
-                          :test #'string-equal)))
+    (let ((command (find-command command-name)))
       (when command
-        (funcall (cdr command) socket message)))))
+        (funcall command socket message)))))
