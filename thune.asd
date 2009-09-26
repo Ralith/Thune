@@ -1,20 +1,20 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (:ircl :cl-fad :split-sequence :montezuma)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma)
   :components
   ((:file "package")
-   (:file "util")
-   (:file "handler")
-   (:file "conf" :depends-on ("util"))
-   (:file "thune" :depends-on ("conf" "handler"))
-   (:file "command" :depends-on ("conf" "handler" "thune" "util"))
+   (:file "util" :depends-on ("package"))
+   (:file "handler" :depends-on ("package"))
+   (:file "conf" :depends-on ("util" "package"))
+   (:file "thune" :depends-on ("conf" "handler" "package"))
+   (:file "command" :depends-on ("conf" "handler" "thune" "util" "package"))
    (:module "handlers"
-            :depends-on ("conf" "handler" "thune" "util")
+            :depends-on ("conf" "handler" "thune" "util" "package")
             :components
             ((:file "autojoin")
              (:file "combo")))
    (:module "commands"
-            :depends-on ("command")
+            :depends-on ("command" "package")
             :components
             ((:file "misc")
              (:file "admin")))))
