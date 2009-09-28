@@ -16,7 +16,7 @@
              (:file "revenge")
              (:file "seen")))
    (:module "commands"
-            :depends-on ("command" "package")
+            :depends-on ("command" "package" "handlers")
             :components
             ((:file "misc")
              (:file "admin")
