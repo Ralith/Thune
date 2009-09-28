@@ -19,11 +19,14 @@
                     ((string-equal (command last) "PART")
                      (format nil "leaving ~a, saying ~a."
                              (first (parameters last))
-                             (if (second (parameters list))
-                                 (format nil "\"~a\"" (second (parameters list)))
+                             (if (second (parameters last))
+                                 (format nil "\"~a\"" (second (parameters last)))
                                  "nothing.")))
                     ((string-equal (command last) "JOIN")
                      (format nil "joining ~a." (first (parameters last))))
                     ((string-equal (command last) "QUIT")
-                     "quitting.")))
+                     (format nil "quitting, saying ~a."
+                             (if (first (parameters last))
+                                 (format nil "\"~a\"" (first (parameters last)))
+                                 "nothing.")))))
           (format nil "I've never seen ~a." nick))))))
