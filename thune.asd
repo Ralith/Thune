@@ -13,7 +13,8 @@
             :components
             ((:file "autojoin")
              (:file "combo")
-             (:file "revenge")))
+             (:file "revenge")
+             (:file "seen")))
    (:module "commands"
             :depends-on ("command" "package")
             :components
