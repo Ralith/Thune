@@ -43,3 +43,11 @@
                             (subseq sequence (+ position (length old-pattern)))))
          (setf position (search old-pattern result)))
     result))
+
+(defun emotep (message)
+  (let ((emote-prefix (format nil "~CACTION" (code-char 1)))
+        (string (car (last (parameters message)))))
+   (and string
+        (> (length string) (length emote-prefix))
+        (string= (subseq string 0 (length emote-prefix))
+                 emote-prefix))))
