@@ -13,9 +13,12 @@
                   (cond
                     ((or (string-equal (command last) "PRIVMSG")
                          (string-equal (command last) "NOTICE"))
-                     (format nil "speaking in ~a, saying \"~a\"."
+                     (format nil "speaking in ~a, ~a."
                              (first (parameters last))
-                             (second (parameters last))))
+                             (if (emotep last)
+                                 (format nil "emoting \"* ~a ~a\""
+                                         nick (second (parameters last)))
+                                 (format nil "saying \"~a\"" (second (parameters last))))))
                     ((string-equal (command last) "PART")
                      (format nil "leaving ~a, saying ~a."
                              (first (parameters last))
