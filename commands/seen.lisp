@@ -1,6 +1,7 @@
 (in-package :thune)
 
 (defcommand "seen" (socket message)
+  "Replies with the time since provided nick has been seen, and what s/he was doing at the time."
   (let* ((nick (command-args message))
          (last (cdr (assoc nick *seen* :test #'string-equal)))
          (reply))
