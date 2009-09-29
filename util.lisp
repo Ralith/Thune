@@ -10,7 +10,6 @@
 
 (defun reply-target (message)
   "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."
-  (assert (slot-boundp message 'ircl:prefix))
   (let ((target (first (parameters message))))
     (if (string= target (conf-value "nick" *conf*))
 	(nick (prefix message))
@@ -51,3 +50,8 @@
         (> (length string) (length emote-prefix))
         (string= (subseq string 0 (length emote-prefix))
                  emote-prefix))))
+
+(defun ctcpp (message)
+  (let ((string (car (last (parameters message)))))
+    (when (> (length string) 0)
+      (char= (code-char 1) (aref string 0)))))

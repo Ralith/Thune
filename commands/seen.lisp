@@ -1,7 +1,7 @@
 (in-package :thune)
 
 (defcommand "seen" (socket message)
-  (let* ((nick (nick (prefix message)))
+  (let* ((nick (command-args message))
          (last (cdr (assoc nick *seen* :test #'string-equal))))
     (send
      socket
@@ -13,11 +13,17 @@
                   (cond
                     ((or (string-equal (command last) "PRIVMSG")
                          (string-equal (command last) "NOTICE"))
-                     (format nil "speaking in ~a, ~a."
+                     (format nil "speaking to ~a, ~a."
                              (first (parameters last))
-                             (if (emotep last)
-                                 (format nil "emoting \"* ~a ~a\""
-                                         nick (second (parameters last)))
+                             (if (ctcpp last)
+                                 (if (emotep last)
+                                     (format nil "emoting \"* ~a ~a\""
+                                             nick
+                                             (let* ((string (second (parameters last)))
+                                                   (text-start (1+ (position #\Space string))))
+                                               (when (> (length string) text-start) (subseq string (1- (length string))))))
+                                     (format nil "sending a CTCP \"~a\"" (let ((string (second (parameters last))))
+                                                                       (subseq string 1 (1- (length string))))))
                                  (format nil "saying \"~a\"" (second (parameters last))))))
                     ((string-equal (command last) "PART")
                      (format nil "leaving ~a, saying ~a."
@@ -31,5 +37,6 @@
                      (format nil "quitting, saying ~a."
                              (if (first (parameters last))
                                  (format nil "\"~a\"" (first (parameters last)))
-                                 "nothing.")))))
+                                 "nothing.")))
+                    (t "doing something strange.")))
           (format nil "I've never seen ~a." nick))))))
