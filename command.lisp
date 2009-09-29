@@ -12,7 +12,7 @@
         ((char= (aref (conf-value "cmdchar" *conf*) 0)
                 (aref string 0))
          (if first-space
-             (values (subseq string (1+ first-space))
+             (values (string-trim " " (subseq string (1+ first-space)))
                      (subseq string 1 first-space))
              (values ""
                      (subseq string 1))))
@@ -22,7 +22,7 @@
            (let ((second-space (position #\Space string
                                          :start (1+ first-space))))
              (if second-space
-                 (values (subseq string (1+ second-space))
+                 (values (string-trim " " (subseq string (1+ second-space)))
                          (subseq string (1+ first-space) second-space))
                  (values ""
                          (subseq string (1+ first-space)))))))))))
