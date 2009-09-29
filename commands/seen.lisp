@@ -6,9 +6,9 @@
          (reply))
     (setf reply
           (if last
-              (format nil "Last saw ~a at ~a, ~a"
+              (format nil "Last saw ~a ~a, ~a"
                       nick
-                      (format-time (received message))
+                      (format nil "~a seconds ago" (- (get-universal-time) (received last)))
                       (cond
                         ((or (string-equal (command last) "PRIVMSG")
                              (string-equal (command last) "NOTICE"))

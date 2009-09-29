@@ -20,4 +20,5 @@
             :components
             ((:file "misc")
              (:file "admin")
-             (:file "help")))))
+             (:file "help")
+             (:file "seen")))))

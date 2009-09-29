@@ -56,24 +56,3 @@
   (let ((string (car (last (parameters message)))))
     (when (> (length string) 0)
       (char= (code-char 1) (aref string 0)))))
-
-(defun month-name (number)
-  (case number
-    (1 "January")
-    (2 "February")
-    (3 "March")
-    (4 "April")
-    (5 "May")
-    (6 "June")
-    (7 "July")
-    (8 "August")
-    (9 "September")
-    (10 "October")
-    (11 "November")
-    (12 "December")))
-
-(defun format-time (time &optional (time-zone 0))
-  (multiple-value-bind (seconds minutes hours date month year)
-      (decode-universal-time time time-zone)
-    (format nil "~a:~a:~a GMT on the ~a of ~a, ~a"
-            hours minutes seconds date (month-name month) year)))
