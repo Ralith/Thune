@@ -55,3 +55,9 @@
   (let ((string (car (last (parameters message)))))
     (when (> (length string) 0)
       (char= (code-char 1) (aref string 0)))))
+
+(defun format-time (time &optional (time-zone 0))
+  (multiple-value-bind (seconds minutes hours date month year)
+      (decode-universal-time time time-zone)
+    (format nil "~a:~a:~a GMT on the ~a of ~a, ~a"
+            hours minutes seconds date month year)))
