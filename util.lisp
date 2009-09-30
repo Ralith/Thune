@@ -32,6 +32,7 @@
 	 (sb-kernel:stream-cold-init-or-reset)))
 
 (defun substitute-string (sequence old-pattern new-pattern)
+  "Return SEQUENCE with all instances of OLD-PATTERN replaced with NEW-PATTERN."
   (let ((position (search old-pattern sequence))
         (result (copy-seq sequence)))
     (loop while position do
@@ -44,6 +45,7 @@
     result))
 
 (defun emotep (message)
+  "Determines if MESSAGE is an IRC emote."
   (let ((string (car (last (parameters message))))
         (end (1+ (length "ACTION"))))
     (and (ctcpp message)
@@ -53,11 +55,17 @@
                   "ACTION"))))
 
 (defun ctcpp (message)
-  (let ((string (car (last (parameters message)))))
-    (when (> (length string) 0)
-      (char= (code-char 1) (aref string 0)))))
+  "Determines if MESSAGE is an IRC CTCP."
+  (let* ((string (car (last (parameters message))))
+         (length (length string)))
+    (when (> length 0)
+      (char= (code-char 1)
+             (aref string 0) (aref string (1- length))))))
 
+;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
+  "Distributes (FIRST VARS) amongst FACTORS such that the value of each VAR is less than its corresponding FACTOR.  The corresponding factor of the last element of VARS, if any, is ignored to ensure support for large values."
+  (assert)
   (let ((stack (gensym))
         (result (gensym))
         (remainder (gensym)))
@@ -67,9 +75,10 @@
                        (floor ,lower (pop ,stack))
                      (setf ,higher ,result)
                      (setf ,lower ,remainder)))
-                vars (cdr vars)))))
+                vars (rest vars)))))
 
 (defmacro %format-interval-string (vars names)
+  "Returns a human-readable string of the values of VARS referred to with their respective NAMES."
   (let ((in-string (gensym))
         (string (gensym)))
     `(let ((,in-string nil)
@@ -87,6 +96,7 @@
        ,string)))
 
 (defun format-interval (seconds)
+  "Returns a human-readable string representing the duration SECONDS in years, months, weeks, days, hours, minutes, and seconds, omitting zero values."
   (if (< seconds 1)
       "no time"
       (let ((years) (months) (weeks) (days) (hours) (minutes))
