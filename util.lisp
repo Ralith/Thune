@@ -3,7 +3,7 @@
 (defun send (socket message)
   "Sends a message over SOCKET, logging to *STANDARD-OUTPUT*."
   (ircl:send-message socket message)
-  (format t "<- ~a~%" (ircl:message->string message nil)))
+  (format t "<- ~a~%" (ircl:message->string message)))
 
 (defun send-raw (socket string)
   "Sends a raw message over SOCKET, logging to *STANDARD-OUTPUT*."
@@ -69,7 +69,6 @@
 ;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
   "Distributes (FIRST VARS) amongst FACTORS such that the value of each VAR is less than its corresponding FACTOR.  The corresponding factor of the last element of VARS, if any, is ignored to ensure support for large values."
-  (assert)
   (let ((stack (gensym))
         (result (gensym))
         (remainder (gensym)))
