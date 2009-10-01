@@ -4,8 +4,7 @@
 
 (defhandler seen (socket message)
   (declare (ignore socket))
-  (when (and (slot-boundp message 'prefix)
-             (slot-boundp (prefix message) 'nick))
+  (when (typep (prefix message) 'user)
    (let* ((nick (nick (prefix message)))
           (cons (assoc nick *seen* :test #'string-equal)))
      (if cons
