@@ -1,24 +1,28 @@
 (in-package :thune)
 
 (defun send (socket message)
+  "Sends a message over SOCKET, logging to *STANDARD-OUTPUT*."
   (ircl:send-message socket message)
   (format t "<- ~a~%" (ircl:message->string message nil)))
 
 (defun send-raw (socket string)
+  "Sends a raw message over SOCKET, logging to *STANDARD-OUTPUT*."
   (ircl:send-raw socket string)
   (format t "<- ~a~%" string))
 
 (defun reply-target (message)
-  "Returns the most appropriate PRIVMSG target for a reply to MESSAGE."
+  "Returns the most appropriate channel or nick to receive a reply to MESSAGE."
   (let ((target (first (parameters message))))
     (if (string= target (conf-value "nick" *conf*))
 	(nick (prefix message))
 	target)))
 
 (defun reply-to (message reply)
+  "Generates a message that will send REPLY in a reply to MESSAGE."
   (make-message (command message) (reply-target message) reply))
 
 (defmacro when-from-admin (message &body body)
+  "Executes BODY only when MESSAGE originates from hostmask listed in the admins section of the configuration."
   `(when (some #'identity (mapcar (lambda (admin) (string= admin (prefix->string (prefix ,message))))
                                   (mapcar (lambda (str) (trim #\space str))
                                           (split-sequence:split-sequence #\, (conf-value "admins" *conf*)))))
