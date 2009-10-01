@@ -42,9 +42,9 @@
     (loop while position do
          (setf result
                (concatenate 'string
-                            (subseq sequence 0 position)
+                            (subseq result 0 position)
                             new-pattern
-                            (subseq sequence (+ position (length old-pattern)))))
+                            (subseq result (+ position (length old-pattern)))))
          (setf position (search old-pattern result)))
     result))
 
