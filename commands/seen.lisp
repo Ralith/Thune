@@ -40,6 +40,9 @@
                                      (if (first (parameters last))
                                          (format nil "\"~a\"" (first (parameters last)))
                                          "nothing.")))
+                            ((string-equal (command last) "NICK")
+                             (format nil "changing nick to \"~a\"."
+                                     (first (parameters last))))
                             (t "doing something strange.")))
                   (format nil "I've never seen anyone going by \"~a\"." nick))))
     (send socket (reply-to message reply))))
