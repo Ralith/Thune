@@ -68,7 +68,7 @@
 
 ;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
-  "Distributes (FIRST VARS) amongst FACTORS such that the value of each VAR is less than its corresponding FACTOR.  The corresponding factor of the last element of VARS, if any, is ignored to ensure support for large values."
+  "Distributes (FIRST VARS) amongst (REST VARS) such that the value of each VAR is less than its corresponding FACTOR.  The factor corresponding to the last element of VARS, if any, is ignored to ensure support for large values."
   (let ((stack (gensym))
         (result (gensym))
         (remainder (gensym)))
