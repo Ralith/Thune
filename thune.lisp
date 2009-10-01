@@ -15,10 +15,6 @@
     (setf (command message) "PONG")
     (send socket message)))
 
-(defhandler log-input (socket message)
-  (declare (ignore socket))
-  (format t "-> ~a~%" (message->string message)))
-
 (define-condition disable-reconnect () ())
 
 (defun start ()
@@ -40,7 +36,11 @@
                          (lambda (e)
                            (send socket (make-message "QUIT" (format nil "Error: ~a" e))))))
            (handler-case
-               (loop (call-handlers socket (get-message socket)))
+               (let ((message))
+                (loop
+                   (setf message (get-message socket))
+                   (format t "-> ~a~%" (message->string message))
+                   (call-handlers socket message)))
              (end-of-file ()
                (disconnect socket)
                (format t "Disconnected.~%")

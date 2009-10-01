@@ -106,4 +106,5 @@
       (let ((years) (months) (weeks) (days) (hours) (minutes))
         (%format-interval-distribute (seconds minutes hours days weeks months years)
                                      (60 60 24 7 4 12))
-        (%format-interval-string (years months weeks days hours minutes seconds) ("year" "month" "week" "day" "hour" "minute" "second")))))
+        (%format-interval-string (years months weeks days hours minutes seconds)
+                                 ("year" "month" "week" "day" "hour" "minute" "second")))))
