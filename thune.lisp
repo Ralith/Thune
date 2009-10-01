@@ -23,7 +23,8 @@
   (setf *conf* (load-conf "thune.conf"))
   (format t "Connecting...~%")
   (let ((socket)
-        (reconnect t))
+        (reconnect t)
+        (ignore (conf-list (conf-value "ignore" *conf*))))
     (loop while reconnect do
          (setf socket (connect (conf-value "server" *conf*)))
          (format t "Connected.~%")
@@ -40,7 +41,11 @@
                 (loop
                    (setf message (get-message socket))
                    (format t "-> ~a~%" (message->string message))
-                   (call-handlers socket message)))
+                   (unless (and (typep (prefix message) 'user)
+                                (some (lambda (x)
+                                        (string-equal x (nick (prefix message))))
+                                      ignore))
+                       (call-handlers socket message))))
              (end-of-file ()
                (disconnect socket)
                (format t "Disconnected.~%")
