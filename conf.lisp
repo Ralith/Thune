@@ -39,3 +39,8 @@
   (loop for line = (read-line stream nil)
      until (null line)
      collecting line))
+
+(defun conf-list (string)
+  "Returns a list of values derived from comma-seperated conf value STRING."
+  (mapcar (lambda (x) (string-trim " " x))
+          (split-sequence #\, string)))
