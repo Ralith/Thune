@@ -52,4 +52,7 @@
     (declare (ignore args))
     (let ((command (find-command command-name)))
       (when command
-        (funcall command socket message)))))
+        (handler-case
+            (funcall command socket message)
+          (error (e)
+            (send socket (reply-to message (format nil "Error executing ~a: ~a" command-name e)))))))))
