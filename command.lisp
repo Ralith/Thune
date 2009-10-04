@@ -55,4 +55,4 @@
         (handler-case
             (funcall command socket message)
           (error (e)
-            (send socket (reply-to message (format nil "Error executing ~a: ~a" command-name e)))))))))
+            (send socket (reply-to message (format nil "Error executing command ~a: ~a" command-name e)))))))))
