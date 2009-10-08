@@ -12,8 +12,9 @@
 
 (defun load-conf (path)
   "Parses an INI-style file into an alist."
-  (with-open-file (stream path)
-    (read-ini stream)))
+  (setf *conf*
+        (with-open-file (stream path)
+          (read-ini stream))))
 
 (defun trim (c str)
   "Trims all instances of C from both ends of STR.  Returns a subsequence of STR."
