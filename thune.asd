@@ -14,7 +14,8 @@
             ((:file "autojoin")
              (:file "combo")
              (:file "revenge")
-             (:file "seen")))
+             (:file "seen")
+             (:file "montezuma-logger")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components
