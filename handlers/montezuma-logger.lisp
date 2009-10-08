@@ -4,7 +4,7 @@
 
 (defhandler montezuma-logger (socket message)
   (declare (ignore socket))
-  (when (null *montezuma-logs*)
+  (unless *montezuma-logs*
     (setf *montezuma-logs*
           (make-instance 'montezuma:index
                          :path (conf-value "logpath"))))
