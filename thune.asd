@@ -22,4 +22,5 @@
             ((:file "misc")
              (:file "admin")
              (:file "help")
-             (:file "seen")))))
+             (:file "seen")
+             (:file "logsearch")))))
