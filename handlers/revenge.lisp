@@ -3,6 +3,6 @@
 (defhandler revenge (socket message)
   (let ((string (car (last (parameters message)))))
     (when (and (emotep message)
-               (search (conf-value "nick" *conf*) string))
+               (search (conf-value "nick") string))
       (send socket (reply-to message (substitute-string string
-                                                        (conf-value "nick" *conf*) (nick (prefix message))))))))
+                                                        (conf-value "nick") (nick (prefix message))))))))

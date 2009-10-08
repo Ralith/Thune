@@ -1,11 +1,14 @@
 (in-package :thune)
 
-(defun conf-value (key conf)
-  "Finds the value of case-insensitive KEY from CONF, returning nil if no such key exists."
-  (cdr (assoc key conf :test #'string-equal)))
+(defvar *conf* nil
+  "The current Thune configuration")
 
-(defun (setf conf-value) (value key conf)
-  (setf (cdr (assoc key conf :test #'string-equal)) value))
+(defun conf-value (key)
+  "Finds the value of case-insensitive KEY from CONF, returning nil if no such key exists."
+  (cdr (assoc key *conf* :test #'string-equal)))
+
+(defun (setf conf-value) (value key)
+  (setf (cdr (assoc key *conf* :test #'string-equal)) value))
 
 (defun load-conf (path)
   "Parses an INI-style file into an alist."

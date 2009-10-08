@@ -1,14 +1,11 @@
 (in-package :thune)
 
-(defvar *conf* nil
-  "The current Thune configuration")
-
 (defun register (socket)
-  (send socket (make-message "NICK" (conf-value "nick" *conf*)))
+  (send socket (make-message "NICK" (conf-value "nick")))
   (send socket (make-message "USER"
-                             (conf-value "user" *conf*)
+                             (conf-value "user")
                              "." "."
-                             (conf-value "realname" *conf*))))
+                             (conf-value "realname"))))
 
 (defhandler pong (socket message)
   (when (string= (command message) "PING")
@@ -20,13 +17,13 @@
 (defun start ()
   "Launches the bot."
   (sanify-output)
-  (setf *conf* (load-conf "thune.conf"))
+  (load-conf "thune.conf")
   (format t "Connecting...~%")
   (let ((socket)
         (reconnect t)
-        (ignore (conf-list (conf-value "ignore" *conf*))))
+        (ignore (conf-list (conf-value "ignore"))))
     (loop while reconnect do
-         (setf socket (connect (conf-value "server" *conf*)))
+         (setf socket (connect (conf-value "server")))
          (format t "Connected.~%")
          (register socket)
          (handler-bind ((disable-reconnect
