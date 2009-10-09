@@ -22,7 +22,7 @@
   (format t "Connecting...~%")
   (let ((socket)
         (read-channel (make-instance 'channel))
-        (write-channel (make-instance 'channel))
+        (write-channel (make-instance 'unbounded-channel))
         (reconnect t)
         (ignore (conf-list (conf-value "ignore"))))
     (loop while reconnect do
