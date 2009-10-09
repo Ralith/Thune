@@ -55,7 +55,6 @@
          (pexec ()
            (loop
               (let ((message (recv input)))
-                (break (princ message))
                 (format t "-> ~a~%" (message->string message))
                 (call-handlers output message))))
          (loop
