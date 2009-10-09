@@ -1,6 +1,6 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:bordeaux-threads)
   :components
   ((:file "package")
    (:file "util" :depends-on ("package"))

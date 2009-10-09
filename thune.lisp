@@ -50,4 +50,4 @@
                  (format t "Reconnecting...~%"))))))))
 
 (defun start-background ()
-  #+sbcl (sb-thread:make-thread #'start :name 'thune))
+  (bordeaux-threads:make-thread #'start :name 'thune))
