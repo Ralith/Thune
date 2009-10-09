@@ -13,7 +13,7 @@
      (defun ,name ,args ,@body)
      (add-handler (quote ,name))))
 
-(defun call-handlers (socket message)
+(defun call-handlers (channel message)
   (mapcar (lambda (handler)
-            (funcall handler socket message))
+            (pexec () (funcall handler channel message)))
           *handlers*))

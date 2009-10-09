@@ -46,13 +46,13 @@
        (defun ,func-name ,args ,@body)
        (add-command ,name (quote ,func-name)))))
 
-;; TODO: Parallelize command execution
-(defhandler command-launcher (socket message)
+(defhandler command-launcher (channel message)
   (multiple-value-bind (args command-name) (command-args message)
     (declare (ignore args))
     (let ((command (find-command command-name)))
       (when command
-        (handler-case
-            (funcall command socket message)
-          (error (e)
-            (send socket (reply-to message (format nil "Error executing command ~a: ~a" command-name e)))))))))
+        (pexec ()
+          (handler-case
+              (funcall command channel message)
+            (error (e)
+              (send channel (reply-to message (format nil "Error executing command ~a: ~a" command-name e))))))))))

@@ -1,10 +1,5 @@
 (in-package :thune)
 
-(defun send (socket message)
-  "Sends a message over SOCKET, logging to *STANDARD-OUTPUT*."
-  (ircl:send-message socket message)
-  (format t "<- ~a~%" (ircl:message->string message)))
-
 (defun send-raw (socket string)
   "Sends a raw message over SOCKET, logging to *STANDARD-OUTPUT*."
   (ircl:send-raw socket string)
