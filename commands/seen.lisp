@@ -1,6 +1,6 @@
 (in-package :thune)
 
-(defcommand "seen" (socket message)
+(defcommand "seen" (channel message)
   "Replies with the time since provided nick has been seen, and what s/he was doing at the time."
   (let* ((nick (command-args message))
          (last (cdr (assoc nick *seen* :test #'string-equal)))
@@ -45,4 +45,4 @@
                                      (first (parameters last))))
                             (t "doing something strange.")))
                   (format nil "I've never seen anyone going by \"~a\"." nick))))
-    (send socket (reply-to message reply))))
+    (send channel (reply-to message reply))))

@@ -3,7 +3,7 @@
 (defvar *last-message* ())
 (defvar *repetition-count* ())
 
-(defhandler combo (socket message)
+(defhandler combo (channel message)
   (when (string= "PRIVMSG" (command message))
     (let ((string (car (last (parameters message)))))
       (let* ((channel (first (parameters message)))
@@ -22,7 +22,7 @@
                       (setf (cdr current-count) 1))))
               (when (and current-count
                          (>= (cdr current-count) 3))
-                (send socket (reply-to message string))
+                (send channel (reply-to message string))
                 (setf (cdr current-count) 0)))
             (push (cons channel string)
                   *last-message*))))))

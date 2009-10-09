@@ -1,8 +1,8 @@
 (in-package :thune)
 
-(defcommand "help" (socket message)
+(defcommand "help" (channel message)
   "Supplies documentation for a command"
-  (send socket
+  (send channel
         (reply-to
          message
          (let ((args (command-args message)))
