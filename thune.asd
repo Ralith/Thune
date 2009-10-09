@@ -1,6 +1,6 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:chanl)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:drakma #:chanl)
   :components
   ((:file "package")
    (:file "util" :depends-on ("package"))
@@ -14,8 +14,7 @@
             ((:file "autojoin")
              (:file "combo")
              (:file "revenge")
-             (:file "seen")
-             (:file "montezuma-logger")))
+             (:file "seen")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components
@@ -23,5 +22,4 @@
              (:file "admin")
              (:file "help")
              (:file "seen")
-             (:file "log-search")
              (:file "google")))))

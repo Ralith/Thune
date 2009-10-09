@@ -21,14 +21,14 @@
   (load-conf "thune.conf")
   (format t "Connecting...~%")
   (let ((socket)
-        (read-channel (make-instance 'channel))
-        (write-channel (make-instance 'unbounded-channel))
+        (input (make-instance 'channel))
+        (output (make-instance 'unbounded-channel))
         (reconnect t)
         (ignore (conf-list (conf-value "ignore"))))
     (loop while reconnect do
          (setf socket (connect (conf-value "server")))
          (format t "Connected.~%")
-         (register write-channel)
+         (register output)
          (pexec ()
           (handler-bind ((disable-reconnect
                           (lambda (c)
@@ -36,7 +36,7 @@
                             (setf reconnect nil)))
                          (error
                           (lambda (e)
-                            (send write-channel (make-message "QUIT" (format nil "Error: ~a" e))))))
+                            (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
             (handler-case
                 (let ((message))
                   (loop
@@ -45,20 +45,21 @@
                                   (some (lambda (x)
                                           (string-equal x (nick (prefix message))))
                                         ignore))
-                       (send read-channel message))))
+                       (send input message))))
               (end-of-file ()
                 (disconnect socket)
-                (send read-channel nil)
+                (send input nil)
                 (format t "Disconnected.~%")
                 (when reconnect
                   (format t "Reconnecting...~%"))))))
          (pexec ()
            (loop
-              (let ((message (recv read-channel)))
+              (let ((message (recv input)))
+                (break (princ message))
                 (format t "-> ~a~%" (message->string message))
-                (call-handlers write-channel message))))
+                (call-handlers output message))))
          (loop
-            (let ((message (recv write-channel)))
+            (let ((message (recv output)))
               (format t "<- ~a~%" (message->string message))
               (send-message socket message))))))
 
