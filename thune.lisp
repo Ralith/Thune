@@ -19,48 +19,53 @@
   (sanify-output)
   (setf drakma:*drakma-default-external-format* :utf-8)
   (load-conf "thune.conf")
-  (format t "Connecting...~%")
   (let ((socket)
         (input (make-instance 'channel))
         (output (make-instance 'unbounded-channel))
+        (ignore (conf-list (conf-value "ignore")))
         (reconnect t)
-        (ignore (conf-list (conf-value "ignore"))))
-    (loop while reconnect do
+        (die nil))
+    (format t "Connecting...~%")
+    (pexec ()
+      (loop
          (setf socket (connect (conf-value "server")))
          (format t "Connected.~%")
          (register output)
-         (pexec ()
-          (handler-bind ((disable-reconnect
-                          (lambda (c)
-                            (declare (ignore c))
-                            (setf reconnect nil)))
-                         (error
-                          (lambda (e)
-                            (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
-            (handler-case
+         (handler-case
+             (loop
                 (let ((message))
-                  (loop
-                     (setf message (get-message socket))
-                     (unless (and (typep (prefix message) 'user)
-                                  (some (lambda (x)
-                                          (string-equal x (nick (prefix message))))
-                                        ignore))
-                       (send input message))))
-              (end-of-file ()
-                (disconnect socket)
-                (send input nil)
-                (format t "Disconnected.~%")
-                (when reconnect
-                  (format t "Reconnecting...~%"))))))
-         (pexec ()
-           (loop
-              (let ((message (recv input)))
-                (format t "-> ~a~%" (message->string message))
-                (call-handlers output message))))
-         (loop
-            (let ((message (recv output)))
-              (format t "<- ~a~%" (message->string message))
-              (send-message socket message))))))
+                  (setf message (get-message socket))
+                  (unless (and (typep (prefix message) 'user)
+                               (some (lambda (x)
+                                       (string-equal x (nick (prefix message))))
+                                     ignore))
+                    (send input message))))
+           (end-of-file ()
+             (format t "Disconnected.~%")
+             (if reconnect
+                 (format t "Reconnecting...~%")
+                 (progn
+                   (setf die t)
+                   (return)))))))
+    (pexec ()
+      (handler-bind
+          ((disable-reconnect
+            (lambda (condition)
+              (declare (ignore condition))
+              (setf reconnect nil)))
+           (error
+            (lambda (e)
+              (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
+       (loop
+          (let ((message (recv input)))
+            (if message
+                (progn (format t "-> ~a~%" (message->string message))
+                       (call-handlers output message))
+                (return))))))
+    (loop until die do
+         (let ((message (recv output)))
+           (send-message socket message)
+           (format t "<- ~a~%" (message->string message))))))
 
 (defun start-background ()
   (pcall #'start))
