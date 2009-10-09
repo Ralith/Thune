@@ -23,4 +23,5 @@
              (:file "admin")
              (:file "help")
              (:file "seen")
-             (:file "log-search")))))
+             (:file "log-search")
+             (:file "google")))))
