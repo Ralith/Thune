@@ -8,7 +8,7 @@
 (defcommand "quit" (channel message)
   "Immediately quits with an optional message.  Admins only."
   (when-from-admin message
-    (signal 'disable-reconnect)
+    (setf *reconnect* nil)
     (send channel (make-message "QUIT" (command-args message)))))
 
 (defcommand "raw" (channel message)

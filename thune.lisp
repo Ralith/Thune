@@ -12,19 +12,19 @@
     (setf (command message) "PONG")
     (send socket message)))
 
-(define-condition disable-reconnect () ())
+(defvar *reconnect*)
 
 (defun start ()
   "Launches the bot."
   (sanify-output)
   (setf drakma:*drakma-default-external-format* :utf-8)
   (setf %thread-pool-soft-limit 64)
+  (setf *reconnect* t)
   (load-conf "thune.conf")
   (let ((socket)
         (input (make-instance 'channel))
         (output (make-instance 'unbounded-channel))
         (ignore (conf-list (conf-value "ignore")))
-        (reconnect t)
         (die nil))
     (format t "Connecting...~%")
     (pexec ()
@@ -43,17 +43,17 @@
                     (send input message))))
            (end-of-file ()
              (format t "Disconnected.~%")
-             (if reconnect
+             (if *reconnect*
                  (format t "Reconnecting...~%")
                  (progn
                    (setf die t)
                    (return)))))))
     (pexec ()
       (handler-bind
-          ((disable-reconnect
+          ((disable-*reconnect*
             (lambda (condition)
               (declare (ignore condition))
-              (setf reconnect nil)))
+              (setf *reconnect* nil)))
            (error
             (lambda (e)
               (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
