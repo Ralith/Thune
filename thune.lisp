@@ -27,7 +27,7 @@
         (ignore (conf-list (conf-value "ignore")))
         (die nil))
     (format t "Connecting...~%")
-    (pexec ()
+    (pexec (:name "Connection Manager")
       (loop
          (setf socket (connect (conf-value "server")))
          (format t "Connected.~%")
@@ -48,7 +48,7 @@
                  (progn
                    (setf die t)
                    (return)))))))
-    (pexec ()
+    (pexec (:name "Handler Dispatch")
       (handler-bind
           ((error
             (lambda (e)
@@ -65,4 +65,4 @@
            (format t "<- ~a~%" (message->string message))))))
 
 (defun start-background ()
-  (pcall #'start))
+  (pcall #'start :name "Main (Message Transmission)"))

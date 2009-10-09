@@ -51,7 +51,7 @@
     (declare (ignore args))
     (let ((command (find-command command-name)))
       (when command
-        (pexec ()
+        (pexec (:name (format nil "Transient Command: ~a" command-name))
           (handler-case
               (funcall command channel message)
             (error (e)

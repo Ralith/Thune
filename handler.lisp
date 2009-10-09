@@ -15,5 +15,6 @@
 
 (defun call-handlers (channel message)
   (mapcar (lambda (handler)
-            (pexec () (funcall handler channel message)))
+            (pexec (:name (format nil "Transient Handler: ~a" handler))
+              (funcall handler channel message)))
           *handlers*))
