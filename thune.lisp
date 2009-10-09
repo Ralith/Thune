@@ -50,11 +50,7 @@
                    (return)))))))
     (pexec ()
       (handler-bind
-          ((disable-*reconnect*
-            (lambda (condition)
-              (declare (ignore condition))
-              (setf *reconnect* nil)))
-           (error
+          ((error
             (lambda (e)
               (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
         (loop
