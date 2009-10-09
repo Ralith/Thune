@@ -48,3 +48,6 @@
                (format t "Disconnected.~%")
                (when reconnect
                  (format t "Reconnecting...~%"))))))))
+
+(defun start-background ()
+  #+sbcl (sb-thread:make-thread #'start :name 'thune))
