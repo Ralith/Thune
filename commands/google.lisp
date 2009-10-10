@@ -1,7 +1,7 @@
 (in-package :thune)
 
 (defcommand "google" (channel message)
-  ;; http://www.google.com/search?hl=en&source=hp&ie=ISO-8859-1&q=baz&btnI=I%27m+Feeling+Lucky
+  "Replies with the first google result for a given search query."
   (multiple-value-bind (content result headers uri)
       (drakma:http-request "http://www.google.com/search"
                            :parameters
