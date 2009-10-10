@@ -24,8 +24,7 @@
   (let ((socket)
         (input (make-instance 'channel))
         (output (make-instance 'unbounded-channel))
-        (ignore (conf-list (conf-value "ignore")))
-        (die nil))
+        (ignore (conf-list (conf-value "ignore"))))
     (format t "Connecting...~%")
     (pexec (:name "Connection Manager")
       (loop
@@ -46,8 +45,10 @@
              (if *reconnect*
                  (format t "Reconnecting...~%")
                  (progn
-                   (setf die t)
-                   (return)))))))
+                   (send input nil)
+                   (send output nil)
+                   (return))))))
+      (format t "Connection manager terminating.~%"))
     (pexec (:name "Handler Dispatch")
       (handler-bind
           ((error
@@ -58,11 +59,16 @@
              (if message
                  (progn (format t "-> ~a~%" (message->string message))
                         (call-handlers output message))
-                 (return))))))
-    (loop until die do
-         (let ((message (recv output)))
-           (send-message socket message)
-           (format t "<- ~a~%" (message->string message))))))
+                 (return)))))
+      (format t "Handler dispatch terminating.~%"))
+    (loop
+       (let ((message (recv output)))
+         (if message
+             (progn
+               (send-message socket message)
+               (format t "<- ~a~%" (message->string message)))
+             (return))))
+    (format t "Main thread terminating.~%")))
 
 (defun start-background ()
   (pcall #'start :name "Main (Message Transmission)"))
