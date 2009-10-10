@@ -7,9 +7,9 @@
             (string= "NOTICE" (command message)))
     (let* ((string (car (last (parameters message))))
            (first-space (position #\Space string))
-           (nick (conf-value "nick")))
+           (nick (conf-value 'nick)))
       (cond
-        ((char= (aref (conf-value "cmdchar") 0)
+        ((char= (aref (conf-value 'cmdchar) 0)
                 (aref string 0))
          (if first-space
              (values (string-trim " " (subseq string (1+ first-space)))

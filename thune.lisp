@@ -1,11 +1,11 @@
 (in-package :thune)
 
 (defun register (channel)
-  (send channel (make-message "NICK" (conf-value "nick")))
+  (send channel (make-message "NICK" (conf-value 'nick)))
   (send channel (make-message "USER"
-                              (conf-value "user")
+                              (conf-value 'user)
                               "." "."
-                              (conf-value "realname"))))
+                              (conf-value 'realname))))
 
 (defhandler pong (socket message)
   (when (string= (command message) "PING")
@@ -23,12 +23,11 @@
   (load-conf "thune.conf")
   (let ((socket)
         (input (make-instance 'channel))
-        (output (make-instance 'unbounded-channel))
-        (ignore (conf-list (conf-value "ignore"))))
+        (output (make-instance 'unbounded-channel)))
     (format t "Connecting...~%")
     (pexec (:name "Connection Manager")
       (loop
-         (setf socket (connect (conf-value "server")))
+         (setf socket (connect (conf-value 'server)))
          (format t "Connected.~%")
          (register output)
          (handler-case
@@ -38,7 +37,7 @@
                   (unless (and (typep (prefix message) 'user)
                                (some (lambda (x)
                                        (string-equal x (nick (prefix message))))
-                                     ignore))
+                                     (conf-value 'ignore)))
                     (send input message))))
            (end-of-file ()
              (format t "Disconnected.~%")

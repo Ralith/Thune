@@ -6,7 +6,7 @@
          (last (cdr (assoc nick *seen* :test #'string-equal)))
          (reply))
     (setf reply
-          (if (string= nick (conf-value "nick"))
+          (if (string= nick (conf-value 'nick))
               "sup"
               (if last
                   (format nil "Last saw ~a ~a ago, ~a"
