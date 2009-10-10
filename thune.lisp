@@ -13,6 +13,7 @@
     (send socket message)))
 
 (defvar *reconnect*)
+(defvar *socket* nil)
 
 (defun start ()
   "Launches the bot."
@@ -21,19 +22,18 @@
   (setf %thread-pool-soft-limit 64)
   (setf *reconnect* t)
   (load-conf "thune.conf")
-  (let ((socket)
-        (input (make-instance 'channel))
+  (let ((input (make-instance 'channel))
         (output (make-instance 'unbounded-channel)))
     (format t "Connecting...~%")
     (pexec (:name "Connection Manager")
       (loop
-         (setf socket (connect (conf-value 'server)))
+         (setf *socket* (connect (conf-value 'server)))
          (format t "Connected.~%")
          (register output)
          (handler-case
              (loop
                 (let ((message))
-                  (setf message (get-message socket))
+                  (setf message (get-message *socket*))
                   (unless (and (typep (prefix message) 'user)
                                (some (lambda (x)
                                        (string-equal x (nick (prefix message))))
@@ -64,7 +64,7 @@
        (let ((message (recv output)))
          (if message
              (progn
-               (send-message socket message)
+               (send-message *socket* message)
                (format t "<- ~a~%" (message->string message)))
              (return))))
     (format t "Main thread terminating.~%")))
