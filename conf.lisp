@@ -15,4 +15,7 @@
   (setf *conf*
         (with-open-file (stream path)
           (let ((*package* (find-package :thune)))
-            (read stream)))))
+            (loop
+               for entry = (read stream nil nil)
+               while entry
+               collecting entry)))))
