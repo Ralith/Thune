@@ -1,6 +1,6 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (#:ircl #:cl-fad #:split-sequence #:drakma #:chanl)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:drakma #:chanl #:postmodern)
   :components
   ((:file "package")
    (:file "util" :depends-on ("package"))
@@ -15,7 +15,8 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
-             (:file "nick-track")))
+             (:file "nick-track")
+             (:file "psql-log")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components
