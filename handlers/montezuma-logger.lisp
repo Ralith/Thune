@@ -1,11 +1,14 @@
 (in-package :thune)
 
-(defvar *channel-logs* nil)
+(defvar *channel-indices* nil)
+
+(defun channel-index (channel)
+  (cdr (assoc channel *channel-indices* :test #'string-equal)))
 
 (defhandler montezuma-logger (socket message)
   (declare (ignore socket))
   (let* ((channel (first (parameters message)))
-         (index (cdr (assoc channel *channel-logs* :test #'string-equal)))
+         (index (channel-index channel))
          (document))
     (when (and (some (lambda (x) (string-equal (command message) x))
                      '("PRIVMSG" "NOTICE" "PART"))
@@ -16,7 +19,7 @@
                                           (format nil "~a/~a"
                                                   (conf-value 'logpath)
                                                   channel))))
-         (push (cons channel new-index) *channel-logs*)
+         (push (cons channel new-index) *channel-indices*)
          (setf index new-index)))
      (when (prefix message)
        (when (typep (prefix message) 'user)
