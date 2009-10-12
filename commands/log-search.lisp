@@ -4,10 +4,7 @@
   (let ((log)
         (index (channel-index (first (parameters message)))))
     (montezuma:search-each index
-                           (format nil "parameter-2:\"~a\""
-                                   (substitute-string (command-args message)
-                                                      "\""
-                                                      "\\\""))
+                           (command-args message)
                            (lambda (doc-id rank)
                              (when (or (null log)
                                        (> rank (cdr log)))

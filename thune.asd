@@ -15,7 +15,7 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
-             (:file "montezuma-logger")
+             (:file "fts-logger")
              (:file "nick-track")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
