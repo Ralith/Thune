@@ -104,3 +104,17 @@
                                      (60 60 24 7 4 12))
         (%format-interval-string (years months weeks days hours minutes seconds)
                                  ("year" "month" "week" "day" "hour" "minute" "second")))))
+
+(defun binary-search (value array &key (test #'=) (order #'<))
+  "Performs a binary search to locate value in ARRAY ordered by LESS according to ASCENDING.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
+  (let* ((midpoint (floor (length array) 2))
+         (midpoint-value (aref array midpoint)))
+    (cond
+      ((funcall test value midpoint-value)
+       (values midpoint-value t))
+      ((< (length array) 2)
+       (values nil nil))
+      ((funcall order value midpoint-value)
+       (binary-search value (subseq array 0 midpoint)))
+      (t
+       (binary-search value (subseq array midpoint))))))
