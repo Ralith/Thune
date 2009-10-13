@@ -5,7 +5,8 @@
 (defun channel-index (channel)
   (cdr (assoc channel *channel-indices* :test #'string-equal)))
 
-(defhandler montezuma-logger (socket message)
+;;; TODO: Log messages to a real database, keyed on mz doc-numbers
+(defhandler fts-logger (socket message)
   (declare (ignore socket))
   (let* ((channel (first (parameters message)))
          (index (channel-index channel))
