@@ -11,4 +11,4 @@
              (ignore result)
              (ignore headers))
     (send channel (reply-to message (let ((string (princ-to-string uri)))
-                                     (subseq string 0 (position #\? string)))))))
+                                     (subseq string 0 (position #\? string :from-end t)))))))
