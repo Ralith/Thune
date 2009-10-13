@@ -4,7 +4,7 @@
   "The current Thune configuration")
 
 (defun conf-value (key)
-  "Finds the value of case-insensitive KEY from CONF, returning nil if no such key exists."
+  "Finds the value associated in the configuration with symbol KEY, returning nil if no such key exists."
   (cdr (assoc key *conf*)))
 
 (defun (setf conf-value) (value key)
@@ -18,4 +18,4 @@
             (loop
                for entry = (read stream nil nil)
                while entry
-               collecting entry)))))
+               collect entry)))))
