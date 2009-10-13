@@ -4,7 +4,7 @@
   (let ((log)
         (index (channel-index (first (parameters message)))))
     (montezuma:search-each index
-                           (command-args message)
+                           (format nil "message:~a" (command-args message))
                            (lambda (doc-id rank)
                              (when (or (null log)
                                        (> rank (cdr log)))
@@ -15,5 +15,5 @@
                                  ;; TODO: Abstracted message formatting, time
                                  (format nil "<~a> ~a"
                                          (montezuma:document-value doc "nick")
-                                         (montezuma:document-value doc "parameter-2")))))
+                                         (montezuma:document-value doc "message")))))
         (send socket (reply-to message "No matches found.")))))
