@@ -118,3 +118,14 @@
        (binary-search value (subseq array 0 midpoint)))
       (t
        (binary-search value (subseq array midpoint))))))
+
+(defun find-lhtml (lhtml &rest tags)
+  "Returns the lhtml block arrived at by descending into each of TAGS sequentially in LHTML."
+  (if tags
+      (apply #'find-lhtml
+             (loop for element in lhtml
+                when (and (listp element)
+                          (eq (first element) (first tags)))
+                return element)
+             (rest tags))
+      lhtml))
