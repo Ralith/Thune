@@ -15,10 +15,15 @@
                             (chtml:make-lhtml-builder)))
          (result (find-lhtml page :body :blockquote :a))
          (url (second (first (second result))))
-         (title (third result)))
-    (when (listp title)
-      (setf title (third title)))
-    (values url title))))
+         (title-markup (cddr result)))
+      (values url
+              (apply #'concatenate 'string
+                     (mapcar (lambda (x)
+                               (if (listp x)
+                                   (progn (assert (eq :b (first x)))
+                                          (third x))
+                                   x))
+                             title-markup))))))
 
 (defcommand "google" (channel message)
   "Replies with the first google result for a given search query."
