@@ -16,13 +16,18 @@
   "Generates a message that will send REPLY in a reply to MESSAGE."
   (make-message (command message) (reply-target message) reply))
 
+(defun adminp (user)
+  "Returns T if the given user has administrator privledges, or NIL otherwise."
+  (some #'identity
+        (mapcar (lambda (admin)
+                  (string= admin
+                           (prefix->string user)))
+                (conf-value 'admins))))
+
 (defmacro when-from-admin (message &body body)
-  "Executes BODY only when MESSAGE originates from hostmask listed in the admins section of the configuration."
-  `(when (some #'identity
-               (mapcar (lambda (admin)
-                         (string= admin
-                                  (prefix->string (prefix ,message))))
-                       (conf-value 'admins)))
+  "Executes BODY only when MESSAGE originates from a user with administrator privledges."
+  `(when (and (typep (prefix ,message) 'user)
+              (adminp (prefix ,message)))
        ,@body))
 
 (defun sanify-output ()
