@@ -28,3 +28,10 @@
                                       (prin1-to-string
                                        (eval (read-from-string (command-args message)))))
                                   (error (e) (format nil "Error: ~a" e))))))))
+
+(defcommand "admin" (channel message)
+  "Informs a user of whether they have administrator privledges."
+  (send channel (reply-to message
+                          (if (adminp (prefix message))
+                              "Yep!"
+                              "Nope."))))
