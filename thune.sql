@@ -1,2 +1,0 @@
-CREATE TABLE log_msg (msgid SERIAL NOT NULL, received TIMESTAMP NOT NULL, nick TEXT NOT NULL, username TEXT NOT NULL, host TEXT NOT NULL, command TEXT NOT NULL, channel TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY (msgid));
-CREATE INDEX log_msg_fts_index ON log_msg USING gin(to_tsvector('english', message));
