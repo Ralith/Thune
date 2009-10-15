@@ -13,7 +13,7 @@
              (ignore uri))
     (let* ((page (chtml:parse content
                             (chtml:make-lhtml-builder)))
-         (result (find-lhtml page :body :blockquote :a))
+         (result (find-nested-tag page :body :blockquote :a))
          (url (second (first (second result))))
          (title-markup (cddr result)))
       (values url
