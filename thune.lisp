@@ -14,6 +14,7 @@
 
 (defvar *reconnect*)
 (defvar *socket* nil)
+(defvar *start-time* nil)
 
 (defun start ()
   "Launches the bot."
@@ -21,6 +22,7 @@
   (setf drakma:*drakma-default-external-format* :utf-8)
   (setf %thread-pool-soft-limit 64)
   (setf *reconnect* t)
+  (setf *start-time* (get-universal-time))
   (load-conf "thune.conf")
   (let ((input (make-instance 'channel))
         (output (make-instance 'unbounded-channel)))

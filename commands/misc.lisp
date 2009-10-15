@@ -18,3 +18,7 @@
                                           (code-char 1)
                                           (command-args message)
                                           (code-char 1)))))
+
+(defcommand "uptime" (channel message)
+  (send channel (reply-to message (format-interval (- (get-universal-time)
+                                                      *start-time*)))))
