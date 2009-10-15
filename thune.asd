@@ -15,6 +15,7 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
+             (:file "nickserv-auth")
              (:file "fts-logger")
              (:file "nick-track")))
    (:module "commands"
@@ -25,5 +26,9 @@
              (:file "help")
              (:file "seen")
              (:file "log-search")
+<<<<<<< HEAD:thune.asd
+             (:file "google")))))
+=======
              (:file "google")
              (:file "weather")))))
+>>>>>>> e5b651ead4b168563128f0844c4e6e37644836c9:thune.asd
