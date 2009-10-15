@@ -1,27 +1,37 @@
 (in-package :thune)
 
-(defcommand "reconnect" (socket message)
+(defcommand "reconnect" (channel message)
   "Immediately reconnects, using an optional quit message.  Admins only."
   (when-from-admin message
-    (send socket (make-message "QUIT" (command-args message)))))
+    (send channel (make-message "QUIT" (command-args message)))))
 
-(defcommand "quit" (socket message)
+(defcommand "quit" (channel message)
   "Immediately quits with an optional message.  Admins only."
   (when-from-admin message
-    (signal 'disable-reconnect)
-    (send socket (make-message "QUIT" (command-args message)))))
+    (setf *reconnect* nil)
+    (send channel (make-message "QUIT" (command-args message)))))
 
-(defcommand "raw" (socket message)
+(defcommand "raw" (channel message)
   "Transmits the unmodified arguments directly to the IRC server.  Admins only."
+  (declare (ignore channel))
   (when-from-admin message
-    (send-raw socket (command-args message))))
+    (send-raw *socket* (command-args message))))
 
-(defcommand "eval" (socket message)
+(defcommand "eval" (channel message)
   "Evaluates the given expression in the bot's package.  Admins only."
   (when-from-admin message
-    (send socket (reply-to message
-                           (handler-case
-                               (let ((*package* (find-package :thune)))
-                                 (prin1-to-string
-                                  (eval (read-from-string (command-args message)))))
-                             (error (e) (format nil "Error: ~a" e)))))))
+    (send channel
+          (reply-to message
+                    (substitute #\\ #\Linefeed
+                                (handler-case
+                                    (let ((*package* (find-package :thune)))
+                                      (prin1-to-string
+                                       (eval (read-from-string (command-args message)))))
+                                  (error (e) (format nil "Error: ~a" e))))))))
+
+(defcommand "admin" (channel message)
+  "Informs a user of whether they have administrator privledges."
+  (send channel (reply-to message
+                          (if (adminp (prefix message))
+                              "Yep!"
+                              "Nope."))))

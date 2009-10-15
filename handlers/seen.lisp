@@ -2,8 +2,8 @@
 
 (defvar *seen* ())
 
-(defhandler seen (socket message)
-  (declare (ignore socket))
+(defhandler seen (channel message)
+  (declare (ignore channel))
   (when (typep (prefix message) 'user)
    (let* ((nick (nick (prefix message)))
           (cons (assoc nick *seen* :test #'string-equal)))

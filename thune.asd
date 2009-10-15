@@ -1,6 +1,6 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:bordeaux-threads)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:chanl #:closure-html)
   :components
   ((:file "package")
    (:file "util" :depends-on ("package"))
@@ -15,8 +15,7 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
-             (:file "montezuma-logger")
-             (:file "nickserv-auth"))
+             (:file "nickserv-auth")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components

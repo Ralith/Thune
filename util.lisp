@@ -1,10 +1,5 @@
 (in-package :thune)
 
-(defun send (socket message)
-  "Sends a message over SOCKET, logging to *STANDARD-OUTPUT*."
-  (ircl:send-message socket message)
-  (format t "<- ~a~%" (ircl:message->string message)))
-
 (defun send-raw (socket string)
   "Sends a raw message over SOCKET, logging to *STANDARD-OUTPUT*."
   (ircl:send-raw socket string)
@@ -13,7 +8,7 @@
 (defun reply-target (message)
   "Returns the most appropriate channel or nick to receive a reply to MESSAGE."
   (let ((target (first (parameters message))))
-    (if (string= target (conf-value "nick"))
+    (if (string= target (conf-value 'nick))
 	(nick (prefix message))
 	target)))
 
@@ -21,12 +16,19 @@
   "Generates a message that will send REPLY in a reply to MESSAGE."
   (make-message (command message) (reply-target message) reply))
 
+(defun adminp (user)
+  "Returns T if the given user has administrator privledges, or NIL otherwise."
+  (some #'identity
+        (mapcar (lambda (admin)
+                  (string= admin
+                           (prefix->string user)))
+                (conf-value 'admins))))
+
 (defmacro when-from-admin (message &body body)
-  "Executes BODY only when MESSAGE originates from hostmask listed in the admins section of the configuration."
-  `(when (some #'identity (mapcar (lambda (admin) (string= admin (prefix->string (prefix ,message))))
-                                  (mapcar (lambda (str) (trim #\space str))
-                                          (split-sequence:split-sequence #\, (conf-value "admins")))))
-     ,@body))
+  "Executes BODY only when MESSAGE originates from a user with administrator privledges."
+  `(when (and (typep (prefix ,message) 'user)
+              (adminp (prefix ,message)))
+       ,@body))
 
 (defun sanify-output ()
   ;; If we're in SBCL but not swank, force unicode output.
@@ -107,3 +109,28 @@
                                      (60 60 24 7 4 12))
         (%format-interval-string (years months weeks days hours minutes seconds)
                                  ("year" "month" "week" "day" "hour" "minute" "second")))))
+
+(defun binary-search (value array &key (test #'=) (order #'<))
+  "Performs a binary search to locate value in ARRAY ordered by LESS according to ASCENDING.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
+  (let* ((midpoint (floor (length array) 2))
+         (midpoint-value (aref array midpoint)))
+    (cond
+      ((funcall test value midpoint-value)
+       (values midpoint-value t))
+      ((< (length array) 2)
+       (values nil nil))
+      ((funcall order value midpoint-value)
+       (binary-search value (subseq array 0 midpoint)))
+      (t
+       (binary-search value (subseq array midpoint))))))
+
+(defun find-lhtml (lhtml &rest tags)
+  "Returns the lhtml block arrived at by descending into each of TAGS sequentially in LHTML."
+  (if tags
+      (apply #'find-lhtml
+             (loop for element in lhtml
+                when (and (listp element)
+                          (eq (first element) (first tags)))
+                return element)
+             (rest tags))
+      lhtml))
