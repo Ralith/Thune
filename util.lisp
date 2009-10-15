@@ -124,13 +124,13 @@
       (t
        (binary-search value (subseq array midpoint))))))
 
-(defun find-lhtml (lhtml &rest tags)
-  "Returns the lhtml block arrived at by descending into each of TAGS sequentially in LHTML."
+(defun find-nested-tag (document &rest tags)
+  "Returns the block arrived at by descending into each of TAGS sequentially in the xmls-style tree DOCUMENT."
   (if tags
-      (apply #'find-lhtml
-             (loop for element in lhtml
+      (apply #'find-nested-tag
+             (loop for element in document
                 when (and (listp element)
-                          (eq (first element) (first tags)))
+                          (equal (first element) (first tags)))
                 return element)
              (rest tags))
-      lhtml))
+      document))

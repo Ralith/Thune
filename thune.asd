@@ -1,6 +1,6 @@
 (asdf:defsystem :thune
   :description "A straightforward IRC bot."
-  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:chanl #:closure-html)
+  :depends-on (#:ircl #:cl-fad #:split-sequence #:montezuma #:drakma #:chanl #:closure-html #:xmls)
   :components
   ((:file "package")
    (:file "util" :depends-on ("package"))
@@ -15,7 +15,9 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
-             (:file "nickserv-auth")))
+             (:file "nickserv-auth")
+             (:file "fts-logger")
+             (:file "nick-track")))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components
@@ -24,4 +26,9 @@
              (:file "help")
              (:file "seen")
              (:file "log-search")
+<<<<<<< HEAD:thune.asd
              (:file "google")))))
+=======
+             (:file "google")
+             (:file "weather")))))
+>>>>>>> e5b651ead4b168563128f0844c4e6e37644836c9:thune.asd
