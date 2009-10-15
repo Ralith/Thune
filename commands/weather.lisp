@@ -23,5 +23,5 @@
          (temperature (cdr (assoc :temperature weather)))
          (humidity (cdr (assoc :humidity weather)))
          (wind (cdr (assoc :wind weather))))
-    (send channel (reply-to message (format nil "~a is ~a. Temperature: ~a; ~a; ~a."
+    (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC; ~a; ~a."
                                             location condition temperature humidity wind)))))
