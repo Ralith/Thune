@@ -25,4 +25,5 @@
              (:file "help")
              (:file "seen")
              (:file "log-search")
-             (:file "google")))))
+             (:file "google")
+             (:file "weather")))))
