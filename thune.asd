@@ -15,7 +15,8 @@
              (:file "combo")
              (:file "revenge")
              (:file "seen")
-             (:file "montezuma-logger")))
+             (:file "montezuma-logger")
+             (:file "nickserv-auth"))
    (:module "commands"
             :depends-on ("command" "package" "handlers")
             :components
