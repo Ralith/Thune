@@ -15,6 +15,5 @@
                         (remove-if-not #'graphic-char-p
                                        (second (parameters message)))))
       (send channel
-            (make-message "NS"
-                          (format nil "IDENTIFY ~a"
-                                  (cdr (assoc 'password config))))))))
+            (make-message "NS" "IDENTIFY"
+                          (cdr (assoc 'password config)))))))
