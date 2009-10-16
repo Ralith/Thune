@@ -14,7 +14,7 @@
           (list
            (cons :condition (get-value (find-nested-tag weather "condition")))
            (cons :fahrenheit (get-value (find-nested-tag weather "temp_f")))
-           (cons :celsius (get-value (find-nested-tag weather "temp_f")))
+           (cons :celsius (get-value (find-nested-tag weather "temp_c")))
            (cons :humidity (get-value (find-nested-tag weather "humidity")))
            (cons :wind (get-value (find-nested-tag weather "wind_condition")))))))))
 
