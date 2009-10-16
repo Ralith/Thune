@@ -18,10 +18,12 @@
 
 (defcommand "weather" (channel message)
   (let* ((location (command-args message))
-         (weather (google-weather location))
-         (condition (cdr (assoc :condition weather)))
-         (temperature (cdr (assoc :temperature weather)))
-         (humidity (cdr (assoc :humidity weather)))
-         (wind (cdr (assoc :wind weather))))
-    (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC; ~a; ~a."
-                                            location condition temperature humidity wind)))))
+         (weather (google-weather location)))
+    (if weather
+        (let ((condition (cdr (assoc :condition weather)))
+              (temperature (cdr (assoc :temperature weather)))
+              (humidity (cdr (assoc :humidity weather)))
+              (wind (cdr (assoc :wind weather))))
+          (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC; ~a; ~a."
+                                                  location condition temperature humidity wind))))
+        (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))
