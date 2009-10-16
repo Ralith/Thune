@@ -1,13 +1,20 @@
 (in-package :thune)
 
 (defhandler nickserv-auth (channel message)
-  (when (and (typep (prefix message) 'user)
-	     (string= (conf-value 'nickserv-nick) (nick (prefix message)))
-	     (string= (conf-value 'nickserv-host) (host (prefix message)))
-	     (string= (conf-value 'nickserv-username) (username (prefix message)))
-	     (string= (conf-value 'nickserv-challenge)
-		      (second (parameters message))))
-        (send channel
-	      (make-message "NS"
-			    (format nil "IDENTIFY ~a"
-				    (conf-value 'password))))))
+  "Authenticates with NickServ when prompted.  Configured by a symbol:string alist with symbols NICK, HOST, USERNAME, and CHALLENGE."
+  (let ((config (conf-value 'nickserv)))
+    (when (and config 
+               (typep (prefix message) 'user)
+               (string= (cdr (assoc 'nick config))
+                        (nick (prefix message)))
+               (string= (cdr (assoc 'host config))
+                        (host (prefix message)))
+               (string= (cdr (assoc 'username config))
+                        (username (prefix message)))
+               (string= (cdr (assoc 'challenge config))
+                        (remove-if-not #'graphic-char-p
+                                       (second (parameters message)))))
+      (send channel
+            (make-message "NS"
+                          (format nil "IDENTIFY ~a"
+                                  (cdr (assoc 'password config))))))))
