@@ -110,8 +110,9 @@
         (%format-interval-string (years months weeks days hours minutes seconds)
                                  ("year" "month" "week" "day" "hour" "minute" "second")))))
 
+;; TODO: Ensure TCO is used.
 (defun binary-search (value array &key (test #'=) (order #'<))
-  "Performs a binary search to locate value in ARRAY ordered by LESS according to ASCENDING.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
+  "Performs a binary search to locate value (as identified by TEST) in ARRAY, which must be sorted such that ORDER returns non-nil when comparing any element to any element following it.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
   (let* ((midpoint (floor (length array) 2))
          (midpoint-value (aref array midpoint)))
     (cond
