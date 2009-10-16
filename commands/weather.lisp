@@ -17,6 +17,29 @@
            (cons :humidity (get-value (find-nested-tag weather "humidity")))
            (cons :wind (get-value (find-nested-tag weather "wind_condition")))))))))
 
+(defun google-forecast (location)
+  (multiple-value-bind (content code headers uri)
+      (drakma:http-request
+       "http://www.google.com/ig/api"
+       :parameters (list (cons "weather" location)))
+    (declare (ignore code)
+             (ignore headers)
+             (ignore uri))
+    (let ((data (find-nested-tag (xmls:parse content) "weather")))
+      (when data
+        (remove nil (mapcar
+                     (lambda (forecast)
+                       (when (and (listp forecast)
+                                  (string= (first forecast) "forecast_conditions"))
+
+                         (flet ((get-value (x) (second (first (second x)))))
+                           (list
+                            (cons :day (get-value (find-nested-tag forecast "day_of_week")))
+                            (cons :low (get-value (find-nested-tag forecast "low")))
+                            (cons :high (get-value (find-nested-tag forecast "high")))
+                            (cons :condition (get-value (find-nested-tag forecast "condition")))))))
+                     (cddr data)))))))
+
 (defcommand "weather" (channel message)
   (let* ((location (command-args message))
          (weather (google-weather location)))
