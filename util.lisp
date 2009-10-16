@@ -110,20 +110,30 @@
         (%format-interval-string (years months weeks days hours minutes seconds)
                                  ("year" "month" "week" "day" "hour" "minute" "second")))))
 
-;; TODO: Ensure TCO is used.
-(defun binary-search (value array &key (test #'=) (order #'<))
-  "Performs a binary search to locate value (as identified by TEST) in ARRAY, which must be sorted such that ORDER returns non-nil when comparing any element to any element following it.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
-  (let* ((midpoint (floor (length array) 2))
+(defun binary-search (value array &key
+                      (test #'=)
+                      (order #'<)
+                      (lower-bound 0)
+                      (upper-bound nil))
+  "Performs a binary search to locate value (as identified by TEST) in the segment of ARRAY between LOWER-BOUND and UPPER-BOUND, which must be sorted such that ORDER returns non-NIL when comparing any element to any element following it, and NIL otherwise.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
+  (unless upper-bound
+    (setf upper-bound (length array)))
+  (let* ((midpoint (+ lower-bound
+                      (floor (- upper-bound lower-bound) 2)))
          (midpoint-value (aref array midpoint)))
     (cond
       ((funcall test value midpoint-value)
        (values midpoint-value t))
-      ((< (length array) 2)
+      ((< (- upper-bound lower-bound) 2)
        (values nil nil))
       ((funcall order value midpoint-value)
-       (binary-search value (subseq array 0 midpoint)))
+       (binary-search value array
+                      :test test :order order
+                      :lower-bound lower-bound :upper-bound midpoint))
       (t
-       (binary-search value (subseq array midpoint))))))
+       (binary-search value array
+                      :test test :order order
+                      :lower-bound midpoint :upper-bound upper-bound)))))
 
 (defun find-nested-tag (document &rest tags)
   "Returns the block arrived at by descending into each of TAGS sequentially in the xmls-style tree DOCUMENT."
