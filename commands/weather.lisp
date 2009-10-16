@@ -51,3 +51,28 @@
           (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC; ~a; ~a."
                                                   location condition temperature humidity wind))))
         (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))
+
+(defcommand "forecast" (channel message)
+  (let* ((location (command-args message))
+         (forecast (google-forecast location)))
+    (if forecast
+        (send channel
+              (reply-to message
+                        (reduce (lambda (accum value)
+                                  (concatenate 'string accum "; " value))
+                                (mapcar (lambda (day)
+                                          (format nil "~a~a~a: ~a with temperatures from ~aC to ~aC"
+                                                  (code-char 2)
+                                                  (cdr (assoc :day day))
+                                                  (code-char 2)
+                                                  (cdr (assoc :condition day))
+                                                  (round (/ (* (- (read-from-string (cdr (assoc :low day)))
+                                                                  32)
+                                                               5)
+                                                            9))
+                                                  (round (/ (* (- (read-from-string (cdr (assoc :high day)))
+                                                                  32)
+                                                               5)
+                                                            9))))
+                                        forecast))))
+        (send channel (reply-to message (format nil "Unable to find forecast for location \"~a\"" location))))))
