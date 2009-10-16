@@ -114,10 +114,8 @@
                       (test #'=)
                       (order #'<)
                       (lower-bound 0)
-                      (upper-bound nil))
+                      (upper-bound (length array)))
   "Performs a binary search to locate value (as identified by TEST) in the segment of ARRAY between LOWER-BOUND and UPPER-BOUND, which must be sorted such that ORDER returns non-NIL when comparing any element to any element following it, and NIL otherwise.  The first return value is the element of ARRAY found, or NIL if none, and the second return value is T if the element was found and NIL otherwise."
-  (unless upper-bound
-    (setf upper-bound (length array)))
   (let* ((midpoint (+ lower-bound
                       (floor (- upper-bound lower-bound) 2)))
          (midpoint-value (aref array midpoint)))
