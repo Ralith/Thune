@@ -9,12 +9,13 @@
              (ignore headers)
              (ignore uri))
     (let ((weather (find-nested-tag (xmls:parse content) "weather" "current_conditions")))
-      (flet ((get-value (x) (second (first (second x)))))
-        (list
-         (cons :condition (get-value (find-nested-tag weather "condition")))
-         (cons :temperature (get-value (find-nested-tag weather "temp_c")))
-         (cons :humidity (get-value (find-nested-tag weather "humidity")))
-         (cons :wind (get-value (find-nested-tag weather "wind_condition"))))))))
+      (when weather
+        (flet ((get-value (x) (second (first (second x)))))
+          (list
+           (cons :condition (get-value (find-nested-tag weather "condition")))
+           (cons :temperature (get-value (find-nested-tag weather "temp_c")))
+           (cons :humidity (get-value (find-nested-tag weather "humidity")))
+           (cons :wind (get-value (find-nested-tag weather "wind_condition")))))))))
 
 (defcommand "weather" (channel message)
   (let* ((location (command-args message))
