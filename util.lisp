@@ -62,11 +62,19 @@
 
 (defun ctcpp (message)
   "Determines if MESSAGE is an IRC CTCP."
-  (let* ((string (car (last (parameters message))))
+  (let* ((string (second (parameters message)))
          (length (length string)))
     (when (> length 0)
       (char= (code-char 1)
              (aref string 0) (aref string (1- length))))))
+
+(defun ctcp-command (message)
+  "Returns the CTCP command contained within MESSAGE, with the arguments, if any, in a second return value, or NIL if MESSAGE is not a CTCP."
+  (when (ctcpp message)
+    (destructuring-bind (command arguments)
+        (split-sequence #\Space (second (parameters message)))
+      (values (subseq command 1)
+              (subseq arguments 0 (1- (length arguments)))))))
 
 ;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
