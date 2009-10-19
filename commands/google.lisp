@@ -56,5 +56,3 @@
                             (if url (format nil "~a - ~a"
                                             url title)
                                 "No results found.")))))
-
-dwarf.lendemaindeveille.com
