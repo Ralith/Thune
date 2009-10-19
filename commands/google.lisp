@@ -1,7 +1,7 @@
 (in-package :thune)
 
 (defun scroogle-search (query)
-  "Returns in the first value the first URL search result, and in the second value its title."
+  "Returns in the first value the first URL search result, and in the second value its title, or NIL if not results found."
   (multiple-value-bind (content code headers uri)
       (drakma:http-request "https://ssl.scroogle.org/cgi-bin/nbbw.cgi"
                            :method :post
@@ -29,5 +29,7 @@
   "Replies with the first google result for a given search query."
   (multiple-value-bind (url title)
       (scroogle-search (command-args message))
-    (send channel (reply-to message (format nil "~a - ~a"
-                                            url title)))))
+    (send channel (reply-to message
+                            (if url (format nil "~a - ~a"
+                                            url title)
+                                "No results found.")))))
