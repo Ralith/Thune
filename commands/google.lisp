@@ -30,6 +30,6 @@
   (multiple-value-bind (url title)
       (scroogle-search (command-args message))
     (send channel (reply-to message
-                            (if url (format nil "~a - ~a"
-                                            url title)
+                            (if url
+                                (format nil "~a - ~a" url title)
                                 "No results found.")))))
