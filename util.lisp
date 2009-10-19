@@ -77,7 +77,7 @@
       (when (> length 2)
        (values (subseq string 1 split-point)
                (when split-point
-                 (subseq string split-point (1- length))))))))
+                 (subseq string (1+ split-point) (1- length))))))))
 
 ;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
