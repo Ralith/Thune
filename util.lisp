@@ -71,11 +71,13 @@
 (defun ctcp-command (message)
   "Returns the CTCP command contained within MESSAGE, with the arguments, if any, in a second return value, or NIL if MESSAGE is not a CTCP."
   (when (ctcpp message)
-    (destructuring-bind (command &optional arguments)
-        (split-sequence #\Space (second (parameters message)))
-      (values (subseq command 1)
-              (when arguments
-                (subseq arguments 0 (1- (length arguments))))))))
+    (let* ((string (second (parameters message)))
+           (split-point (position #\Space string))
+           (length (length string)))
+      (when (> length 2)
+       (values (subseq string 1 split-point)
+               (when split-point
+                 (subseq string split-point (1- length))))))))
 
 ;;; TODO: Take a list of var-factor pairs
 (defmacro %format-interval-distribute (vars factors)
