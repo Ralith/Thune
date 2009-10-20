@@ -41,6 +41,7 @@
                             (cons :condition (get-value (find-nested-tag forecast "condition")))))))
                      (cddr data)))))))
 
+(defaliases "weather" "w")
 (defcommand "weather" (channel message)
   (let ((location (maybe-cache "weather"
                                 (nick (prefix message))
@@ -57,6 +58,7 @@
                                                       location condition celsius fahrenheit humidity wind))))
             (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))))
 
+(defaliases "forecast" "f")
 (defcommand "forecast" (channel message)
   (let ((location (maybe-cache "forecast"
                                (nick (prefix message))
