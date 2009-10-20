@@ -42,25 +42,20 @@
                      (cddr data)))))))
 
 (defcommand "weather" (channel message)
-  (let* ((location
-          (let* ((nick (nick (prefix message)))
-                 (cache (input-cache "weather" nick))
-                 (args (command-args message)))
-            (if (string= args "")
-                (when cache
-                  cache)
-                (progn
-                  (setf (input-cache "weather" nick) args)))))
-        (weather (google-weather location)))
-    (if weather
-        (let ((condition (cdr (assoc :condition weather)))
-              (celsius (cdr (assoc :celsius weather)))
-              (fahrenheit (cdr (assoc :fahrenheit weather)))
-              (humidity (cdr (assoc :humidity weather)))
-              (wind (cdr (assoc :wind weather))))
-          (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC/~aF; ~a; ~a."
-                                                  location condition celsius fahrenheit humidity wind))))
-        (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))
+  (let ((location (maybe-cache "weather"
+                                (nick (prefix message))
+                                (second (parameters message)))))
+    (when location
+      (let ((weather (google-weather location)))
+        (if weather
+            (let ((condition (cdr (assoc :condition weather)))
+                  (celsius (cdr (assoc :celsius weather)))
+                  (fahrenheit (cdr (assoc :fahrenheit weather)))
+                  (humidity (cdr (assoc :humidity weather)))
+                  (wind (cdr (assoc :wind weather))))
+              (send channel (reply-to message (format nil "~a is ~a. Temperature: ~aC/~aF; ~a; ~a."
+                                                      location condition celsius fahrenheit humidity wind))))
+            (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))))
 
 (defcommand "forecast" (channel message)
   (let* ((location (command-args message))
