@@ -58,30 +58,31 @@
             (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))))
 
 (defcommand "forecast" (channel message)
-  (let* ((location (maybe-cache "forecast"
-                                (nick (prefix message))
-                                (command-args message)))
-         (forecast (google-forecast location)))
-    (if forecast
-        (send channel
-              (reply-to message
-                        (reduce (lambda (accum value)
-                                  (concatenate 'string accum "; " value))
-                                (mapcar (lambda (day)
-                                          (format nil "~a~a~a: ~a with temperatures from ~aC/~aF to ~aC/~aF"
-                                                  (code-char 2)
-                                                  (cdr (assoc :day day))
-                                                  (code-char 2)
-                                                  (cdr (assoc :condition day))
-                                                  (round (/ (* (- (read-from-string (cdr (assoc :low day)))
-                                                                  32)
-                                                               5)
-                                                            9))
-                                                  (cdr (assoc :low day))
-                                                  (round (/ (* (- (read-from-string (cdr (assoc :high day)))
-                                                                  32)
-                                                               5)
-                                                            9))
-                                                  (cdr (assoc :high day))))
-                                        forecast))))
-        (send channel (reply-to message (format nil "Unable to find forecast for location \"~a\"" location))))))
+  (let ((location (maybe-cache "forecast"
+                               (nick (prefix message))
+                               (command-args message))))
+    (when location
+      (let ((forecast (google-forecast location)))
+       (if forecast
+           (send channel
+                 (reply-to message
+                           (reduce (lambda (accum value)
+                                     (concatenate 'string accum "; " value))
+                                   (mapcar (lambda (day)
+                                             (format nil "~a~a~a: ~a with temperatures from ~aC/~aF to ~aC/~aF"
+                                                     (code-char 2)
+                                                     (cdr (assoc :day day))
+                                                     (code-char 2)
+                                                     (cdr (assoc :condition day))
+                                                     (round (/ (* (- (read-from-string (cdr (assoc :low day)))
+                                                                     32)
+                                                                  5)
+                                                               9))
+                                                     (cdr (assoc :low day))
+                                                     (round (/ (* (- (read-from-string (cdr (assoc :high day)))
+                                                                     32)
+                                                                  5)
+                                                               9))
+                                                     (cdr (assoc :high day))))
+                                           forecast))))
+           (send channel (reply-to message (format nil "Unable to find forecast for location \"~a\"" location))))))))
