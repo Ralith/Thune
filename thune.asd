@@ -8,6 +8,7 @@
    (:file "conf" :depends-on ("util" "package"))
    (:file "thune" :depends-on ("conf" "handler" "package"))
    (:file "command" :depends-on ("conf" "handler" "thune" "util" "package"))
+   (:file "command-alias" :depends-on ("command"))
    (:module "handlers"
             :depends-on ("conf" "handler" "thune" "util" "package")
             :components
@@ -19,7 +20,7 @@
              (:file "fts-logger")
              (:file "nick-track")))
    (:module "commands"
-            :depends-on ("command" "package" "handlers")
+            :depends-on ("command-alias" "command" "package" "handlers")
             :components
             ((:file "misc")
              (:file "admin")
