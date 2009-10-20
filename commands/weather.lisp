@@ -43,6 +43,7 @@
 
 (defaliases "weather" "w")
 (defcommand "weather" (channel message)
+  "Replies with current weather conditions for the supplied location."
   (let ((location (maybe-cache "weather"
                                 (nick (prefix message))
                                 (command-args message))))
@@ -60,6 +61,7 @@
 
 (defaliases "forecast" "f")
 (defcommand "forecast" (channel message)
+  "Replies with forecasts for the near future at location."
   (let ((location (maybe-cache "forecast"
                                (nick (prefix message))
                                (command-args message))))
