@@ -58,7 +58,9 @@
             (send channel (reply-to message (format nil "Unable to find weather for location \"~a\"" location))))))))
 
 (defcommand "forecast" (channel message)
-  (let* ((location (command-args message))
+  (let* ((location (maybe-cache "forecast"
+                                (nick (prefix message))
+                                (command-args message)))
          (forecast (google-forecast location)))
     (if forecast
         (send channel
