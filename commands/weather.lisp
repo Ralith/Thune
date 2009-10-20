@@ -44,7 +44,7 @@
 (defcommand "weather" (channel message)
   (let ((location (maybe-cache "weather"
                                 (nick (prefix message))
-                                (second (parameters message)))))
+                                (command-args message))))
     (when location
       (let ((weather (google-weather location)))
         (if weather
