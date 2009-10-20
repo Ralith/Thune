@@ -176,3 +176,11 @@
             (push (cons nick value) (cdr command-alist)))
         (push (cons command (list (cons nick value))) *input-cache*))
     value))
+
+(defun maybe-cache (command nick input)
+  (if (or (null input)
+          (string= "" input))
+      (input-cache command nick)
+      (progn
+        (setf (input-cache command nick) input)
+        input)))
