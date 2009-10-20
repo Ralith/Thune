@@ -51,14 +51,18 @@
        (defun ,func-name ,args ,@body)
        (add-command ,name (quote ,func-name)))))
 
+(defun spawn-command (channel message command-name)
+  "Spawns the named command, if it exists."
+  (let ((command (find-command command-name)))
+    (when command
+      (pexec (:name (format nil "Transient Command: ~a" command-name))
+        (handler-case
+            (funcall command channel message)
+          (error (e)
+            (send channel (reply-to message (substitute #\\ #\Linefeed (format nil "Error executing command ~a: ~a" command-name e))))))))))
+
 (defhandler command-launcher (channel message)
   "Determines if MESSAGE contains a command, and, if so, spawns it."
   (multiple-value-bind (args command-name) (command-args message)
     (declare (ignore args))
-    (let ((command (find-command command-name)))
-      (when command
-        (pexec (:name (format nil "Transient Command: ~a" command-name))
-          (handler-case
-              (funcall command channel message)
-            (error (e)
-              (send channel (reply-to message (substitute #\\ #\Linefeed (format nil "Error executing command ~a: ~a" command-name e)))))))))))
+    (spawn-command channel message command-name)))
