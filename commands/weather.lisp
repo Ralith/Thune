@@ -42,8 +42,15 @@
                      (cddr data)))))))
 
 (defcommand "weather" (channel message)
-  (let* ((location (command-args message))
-         (weather (google-weather location)))
+  (let* ((location
+          (let* ((nick (nick (prefix message)))
+                 (cache (input-cache "weather" nick))
+                 (args (command-args message)))
+            (if (string= args "")
+                (when cache
+                  cache)
+                (setf (input-cache "weather" nick) args))))
+        (weather (google-weather location)))
     (if weather
         (let ((condition (cdr (assoc :condition weather)))
               (celsius (cdr (assoc :celsius weather)))
