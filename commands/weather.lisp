@@ -49,7 +49,9 @@
             (if (string= args "")
                 (when cache
                   cache)
-                (setf (input-cache "weather" nick) args))))
+                (progn
+                  (setf (input-cache "weather" nick) args)
+                  args))))
         (weather (google-weather location)))
     (if weather
         (let ((condition (cdr (assoc :condition weather)))
