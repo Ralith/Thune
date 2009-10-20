@@ -175,4 +175,4 @@
             (setf (cdr nick-alist) value)
             (push (cons nick value) (cdr command-alist)))
         (push (cons command (list (cons nick value))) *input-cache*))
-    (values)))
+    value))
