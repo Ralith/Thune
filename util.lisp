@@ -154,3 +154,24 @@
                 return element)
              (rest tags))
       document))
+
+(defvar *input-cache* ()
+  "Stores cached input for some commands.")
+
+(defun input-cache (command nick)
+  "Retrieve cached input from NICK for COMMAND."
+  (cdr (assoc nick (cdr (assoc command *input-cache*
+                               :test #'string-equal))
+              :test #'string-equal)))
+
+(defun (setf input-cache) (value command nick)
+  "Set input cache associated with NICK and COMMAND to VALUE."
+  (let* ((command-alist (assoc command *input-cache*
+                               :test #'string-equal))
+         (nick-alist (assoc nick (cdr command-alist)
+                            :test #'string-equal)))
+    (if command-alist
+        (if nick-alist
+            (setf (cdr nick-alist) value)
+            (push (cons nick value) (cdr command-alist)))
+        (push (cons command (list (cons nick value))) *input-cache*))))
