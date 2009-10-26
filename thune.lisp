@@ -58,11 +58,12 @@
           (select
             ((recv input message)
              (if message
-                 (progn (format t "-> ~a~%" (message->string message))
-                        (handler-bind
-                            ((error (lambda (e)
-                                      (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
-                          (call-handlers output message)))
+                 (progn
+                   (format t "-> ~a~%" (message->string message))
+                   (handler-bind
+                       ((error (lambda (e)
+                                 (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
+                     (call-handlers output message)))
                  (setf running nil)))
             ((recv output message)
              (if message
