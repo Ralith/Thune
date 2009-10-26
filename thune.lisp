@@ -51,24 +51,25 @@
                    (return))))))
       (format t "Connection manager terminating.~%"))
     (pexec (:name "Handler Dispatch")
-      (handler-bind
-          ((error
-            (lambda (e)
-              (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
-        (loop
-           (let ((message (recv input)))
+      
+      (format t "Handler dispatch terminating.~%"))
+    (let ((running t))
+     (loop while running do
+          (select
+            ((recv input message)
              (if message
                  (progn (format t "-> ~a~%" (message->string message))
-                        (call-handlers output message))
-                 (return)))))
-      (format t "Handler dispatch terminating.~%"))
-    (loop
-       (let ((message (recv output)))
-         (if message
-             (progn
-               (send-message *socket* message)
-               (format t "<- ~a~%" (message->string message)))
-             (return))))
+                        (handler-bind
+                            ((error (lambda (e)
+                                      (send output (make-message "QUIT" (format nil "Error: ~a" e))))))
+                          (call-handlers output message)))
+                 (setf running nil)))
+            ((recv output message)
+             (if message
+                 (progn
+                   (send-message *socket* message)
+                   (format t "<- ~a~%" (message->string message)))
+                 (setf running nil))))))
     (format t "Main thread terminating.~%")))
 
 (defun start-background ()
