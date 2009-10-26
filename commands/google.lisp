@@ -21,6 +21,7 @@
                                  x))
                            title-markup)))))
 
+(defaliases "google" "g")
 (defcommand "google" (channel message)
   "Replies with the first google result for a given search query."
   (multiple-value-bind (url title)
@@ -30,8 +31,9 @@
                                 (format nil "~a - ~a" url title)
                                 "No results found.")))))
 
-(defcommand "trope" (channel message)
-  "Replies with the first google result for a given search query, but includes 'site:tvtropes.org' in the search string."
+(defaliases "tvtropes" "trope")
+(defcommand "tvtropes" (channel message)
+  "Searches for a tvtropes article pertaining to the given query."
   (multiple-value-bind (url title)
       (scroogle-search (format nil "site:tvtropes.org ~a" (command-args message)))
     (send channel (reply-to message
@@ -39,19 +41,11 @@
                                             url title)
                                 "No results found.")))))
 
-(defcommand "wp" (channel message)
-  "Replies with the first google result for a given search query, but includes 'site:tvtropes.org' in the search string."
+(defaliases "wikipedia" "wp" "wiki")
+(defcommand "wikipedia" (channel message)
+  "Searches for a wikipedia article pertaining to the given query."
   (multiple-value-bind (url title)
       (scroogle-search (format nil "site:en.wikipedia.org ~a" (command-args message)))
-    (send channel (reply-to message
-                            (if url (format nil "~a - ~a"
-                                            url title)
-                                "No results found.")))))
-
-(defcommand "df" (channel message)
-  "Replies with the first google result for a given search query, but includes 'site:tvtropes.org' in the search string."
-  (multiple-value-bind (url title)
-      (scroogle-search (format nil "site:dwarf.lendemaindeveille.com ~a" (command-args message)))
     (send channel (reply-to message
                             (if url (format nil "~a - ~a"
                                             url title)
