@@ -34,13 +34,14 @@
          (register output)
          (handler-case
              (loop
-                (let ((message))
-                  (setf message (get-message *socket*))
-                  (unless (and (typep (prefix message) 'user)
-                               (some (lambda (x)
-                                       (string-equal x (nick (prefix message))))
-                                     (conf-value 'ignore)))
-                    (send input message))))
+                (handler-case
+                    (let ((message (get-message *socket*)))
+                      (unless (and (typep (prefix message) 'user)
+                                   (some (lambda (x)
+                                           (string-equal x (nick (prefix message))))
+                                         (conf-value 'ignore)))
+                        (send input message)))
+                  (error (e) (format nil "Caught error: ~a" e))))
            (end-of-file ()
              (format t "Disconnected.~%")
              (if *reconnect*
